@@ -1,0 +1,161 @@
+2013-1-9
+i haven't fully understand how it works, expecially these steps:
+    modprobe ppp_generic
+    modprobe ppp_async
+    modprobe ppp_synctty
+    if test -n "$LINUX_PLUGIN"; then
+        modprobe pppox
+        modprobe pppoe
+    fi
+
+it write the pppoe process pid to a file 
+it export the shell script to load the config file
+it treat kernel ppp as a plugin
+
+
+=========================================================
+PPPD[http://bbs.chinaunix.net/thread-2184697-1-1.html]
+--------------------------------------------------------
+PPPD is the implement of PPP protocol
+[LCP, CHAP, IPCP] <-->[FSM Module]
+{
+    read param;
+    config param;
+    /*start from LCP*/
+    lcp_lowerup(0);
+    lcp_open(0);    /* start protocol */
+    ......
+
+}
+
+IPCP
+decide IP and route and ARP and DNS server
+
+
+PPPoE
+-------------------------------------------------------
+do {
+    ......
+    sendPADI(conn);
+    conn->disvoceryState = STATE_SEND_PADI;
+    waitForPADO(conn, timeout);
+    ....
+}while(conn->discoveryState == STATE_SEND_PADI);
+
+do {
+    ......
+    sendPADR(conn);
+    conn->disvoceryState = STATE_SEND_PADR;
+    waitForPADS(conn, timeout);
+    ......
+}while(conn->discoveryState == STATE_SEND_PADR);
+
+SESSION 
+---------------------------------------------------------
+create a RAW socket --> read data from pppd --> send with pppoe head 
+get ppp0 and get the ip
+for(;;) {
+    ......
+    /* reveive from pppd */
+    if(FD_ISSET(0, &readable)) {
+           if (conn->synchronous) {
+               syncReadFromPPP(conn, &packet);
+           } 
+           else {
+               asyncReadFromPPP(conn, &packet);
+           }
+       }
+       /* receive from MIC */
+    if (FD_ISSET(conn->sessionSocket, &readable)) {
+              do {
+              if (conn->synchronous) {
+                  syncReadFromEth(conn, conn->sessionSocket, optClampMSS);
+              } else {
+                  asyncReadFromEth(conn, conn->sessionSocket, optClampMSS);
+              }
+                 } while (BPF_BUFFER_HAS_DATA);
+              }
+          }
+
+PPPOE建立连接后数据报文走向
+--------------------------------------------------------
+如果从eth收到PPPOE数据：
+首先数据被PPPOE中RAW SOCKET数据接收，PPPOE解开到数据包的PPPOE头，然后将数据传
+送到伪终端主设备，也就是传送到了伪终端的从设备，然后在内核中数据跑到了PPP0接口，这是个设备，他会通将
+个包处理后往上层传送；
+如果有数据要发送出去：
+首先根据路由知道数据要发送的端口在PPP0设备端口，数据就到达了PPP0端口，PPP0将数据送到
+端从设备，也就是传送到了端主设备，然后到达PPPOE，PPPOE程序打上PPPOE包头，然后通过
+RAW SOCKET从ETH口发送出去。
+
+=========================================================
+RFC 2516
+pppoe
+two stages: 1. discovery stage
+            2. ppp session
+
+1. SESSION_ID and MAC together define the pppoe sesison uniquely
+4 steps: host broadcasting, access concentrator sending offer packets,
+         host sending a unicast session request packet,
+         the selected access concentrator sending a confirmation packet
+all discovery ethernet frames have the ETHER_TYPE field set to value 0x8863
+
+PPPoE payload contains >= 0 TAGs, a TAG is a TLV(type-length-value)
+construct
+
+PADI(PPPoE Active Discovery Initation):
+VER: 0x1
+TYPE: 0x1
+DESTINSTION_ADDR: broadcast address. 
+CODE : 0x09
+SESSION_ID: 0x0000
+must contain exactly one TAG of TAG_TYPE Service-Name, indicating 
+the service the host is requesting  and any number of other TAG types
+
+PADO(PPPoE Active Discovery Offer):
+DESITINATION_ADDR: unicast address 
+CODE: 0x07
+SESSION_ID: 0x0000
+must contain one AC-Nname TAG containing the Access Concentrator's name
+a Service-Name TAG identical to the one in the PADI, any number of other 
+Serivice-Name TAGs indicating other services. 
+
+PADR(PPPoE Active Discovery Request)
+DESTINATION_ADDR: unicast Ethernet address 
+CODE: 0x19
+SESSION_ID: 0x0000
+must contain exactly one TAG of TAG_TYPE Service-Name, indicating the 
+Service the Host is requesting and any number of other TAG types
+
+PADS(PPPoE Active Discovery Session-confirmation)
+DESTIONATION_ADDR: 
+CODE: 0x65
+SESSION_ID: 
+contains one TAG of TAG_TYPE Service-Name, and any other TAG types
+of reply with a PADS containing a RAG of TAG_YTPE Service-Name_Error
+
+PADT(PPPoE Active Discovery Terminate)
+send by either the host or the access concentrator
+CODE: 0xa7
+SESSION_ID: the id
+no tags
+
+PPP Session
+ETHER_TYPE: 0x8864
+PPPoE Code: 0x00
+SESSION_ID:  id
+
+LCP considerations 
+use LCP configuration option and not PFC
+must not request any of the following options, and must reject a request 
+for such an option: 
+    Field Check Sequence(FCS) alternatives
+    Address-and-Control_Field-Compression(ACFC)
+    Asynchronous-Control-Character-Map(ACCM)
+MRU(Maximum-Receive-Unit)  <= 1492,
+Access Concentrator ocassionally send Echo-Request packets to  the host
+to determine the state of the sesion. (Host may gone away)
+when LCP terminates, stop using the origin PPPoE session.
+
+Security
+DOS: access concentrator can employ the ac-cookie TAG.
