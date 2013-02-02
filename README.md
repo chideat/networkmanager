@@ -1,4 +1,8 @@
-#### A lightweight networkmanager
+A lightweight networkmanager
+============================
+
+Features
+-----------
 * with kernel pppoe
 * with wireless connection
 * based on rp-pppoe, net-tools and so on
