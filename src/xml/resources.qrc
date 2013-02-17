@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>index.html</file>
+        <file>js/jquery.min.js</file>
+        <file>js/main.js</file>
+        <file>css/main.css</file>
+        <file>img/wired.png</file>
+        <file>img/wired-disconnected.png</file>
+        <file>img/wireless.png</file>
+    </qresource>
+</RCC>

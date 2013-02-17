@@ -1,10 +1,10 @@
-/* 
+﻿/* 
  * static char const RCSID[] =
  * "$Id$";
  */
 #define _GNU_SOURCE 1
 
-#include "pppoe.h"
+#include "ppp/pppoe.h"
 
 #ifdef HAVE_SYSLOG_H
 #include <syslog.h>

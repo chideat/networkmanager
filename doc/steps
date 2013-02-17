@@ -1,0 +1,5 @@
+﻿pppoe connection steps
+1. find the actived interface 
+2. active the pppoe connection procession 
+3. try ppp connection
+4. connected or connection failed
