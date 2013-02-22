@@ -11,7 +11,9 @@ Window::Window(QWebView *parent) : QWebView(parent) {
     page()->settings()->setAttribute(QWebSettings::JavascriptCanAccessClipboard, true);
     
     connect(page()->mainFrame(), &QWebFrame::javaScriptWindowObjectCleared, [=](){
-        page()->mainFrame()->addToJavaScriptWindowObject(QString("QObject"), this);
+        page()->mainFrame()->addToJavaScriptWindowObject(QString("Q_Operator"), this);
+        //expode the interface to javascript
+        page()->mainFrame()->addToJavaScriptWindowObject(QString("Q_Notify"), notify);
     });
     connect(this, &Window::loadFinished,[=](){
         //here load the necessary device info

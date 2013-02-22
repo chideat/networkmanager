@@ -1,4 +1,4 @@
-﻿/***********************************************************************
+/***********************************************************************
 *
 * pppoe.h
 *
@@ -15,7 +15,7 @@
 *
 ***********************************************************************/
 
-#include "../config.h"
+#include "config.h"
 
 extern int IsSetID;
 
@@ -159,7 +159,7 @@ extern void switchToEffectiveID(void);
 extern void dropPrivs(void);
 
 /* PPPoE codes */
-#define CODE_PADI            0x09
+#define CODE_PADI           0x09
 #define CODE_PADO           0x07
 #define CODE_PADR           0x19
 #define CODE_PADS           0x65
