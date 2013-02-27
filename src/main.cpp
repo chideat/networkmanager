@@ -1,15 +1,22 @@
 ﻿#include "gui/window.h"
 #include <QApplication>
-#include <QTextCodec>
+#include <QRect>
+#include <QDesktopWidget>
+
+#define WIDTH 300
 
 int main(int argc, char **argv) {
     QApplication app(argc, argv);
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+    app.setApplicationName("networkmanager");
+    app.setOrganizationName("分享zhe");
+    QRect rect = app.desktop()->screenGeometry();
+    Window *window = new Window;
+    window->setGeometry(rect.width() - WIDTH, 24, WIDTH, rect.height() - 24);
     
-    //  mainWindow->setAttribute (Qt::WA_ShowModal,true);
-     // mainWindow->setWindowOpacity (1);
-  //    mainWindow->setWindowFlags (Qt::FramelessWindowHint);
-  //    mainWindow->setAttribute (Qt::WA_TranslucentBackground);
-    
+    window->setAttribute (Qt::WA_ShowModal,true);
+    window->setWindowOpacity (1);
+    window->setWindowFlags (Qt::FramelessWindowHint);
+    window->setAttribute (Qt::WA_TranslucentBackground);
+    window->show();
     return app.exec();
 }

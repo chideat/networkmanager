@@ -1,8 +1,6 @@
 #include "notification.h"
 #include <QtDBus>
 
-
-
 unsigned int Notification::notify(QString name, unsigned int replace_id, Category cate, QString summary, QString body, QStringList actions, QMap<QString, QVariant> hint, int timeout) {
     qDBusRegisterMetaType<QMap<QString, QVariant> >();
     static QDBusInterface interface(
