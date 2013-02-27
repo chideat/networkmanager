@@ -1,47 +1,39 @@
-﻿#ifndef NOTIFICATION_H
+#ifndef NOTIFICATION_H
 #define NOTIFICATION_H
 
-/**
- * this file defined the necessary notification functions
- */
-#include <QObject>
+#include <QStringList>
+#include <QMap>
+#include <QVariant>
 
-class Notification: public QObject {
+class Notification : public QObject {
     Q_OBJECT
-public :
-    Notification(QObject *parent = NULL): QObject(parent) {}
+public:
+    Notification(QObject *parent = NULL):QObject(parent){}
     ~Notification(){}
+#define NT_FUNCTION "Notify"
     
-    enum Level {
-        Information = 0,
-        Warning = 1,
-        Error = 2
+// dbus path and interface
+#define NT_DBUS_SERVICE "org.freedesktop.Notifications"
+#define NT_DBUS_PATH "/org/freedesktop/Notifications"
+#define NT_DBUS_INTERFACE "org.freedesktop.Notifications"
+    
+// default icons
+#define ICON_INFO "info"
+#define ICON_WARNING "dialog-warning"
+#define ICON_ERROR "error"
+    
+    enum Category {
+        Info,
+        Warning,
+        Error
     };
-    //send the message to window
-    bool setMessage(Level l, QString m) {
-        QString tmp = "<span class=";
-        switch(l) {
-        case Information:
-            tmp  += "\"information\"";
-            break;
-        case Warning:
-            tmp += "\"warning\"";
-            break;
-        case Error:
-            tmp += "\"error\"";
-            break;
-        default:
-            return false;
-        }
-        tmp += ">" + m + "</span>";
-        emit notification(tmp);
-        return true;
-    }
-
-signals: 
-    void notification(QString m);
+    
+    static unsigned int notify(QString name, unsigned int replace_id, Category cate, 
+                               QString summary, QString body, 
+                               QStringList actions = QStringList(), 
+                               QMap<QString, QVariant> hint = QMap<QString, QVariant>(), 
+                               int timeout = 3);
+signals :
 };
-
-
 
 #endif // NOTIFICATION_H

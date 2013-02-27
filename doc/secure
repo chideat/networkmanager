@@ -1,0 +1,29 @@
+    WPA的设计可以在所有无线网卡上，未必在第一代无线接入点上;WPA2实现了
+完整的标准。，不能用于某些古老的网卡
+    WPA为用户提供一个临时性的解决方案，该标准的数据加密采用TKIP协议
+(Temporary key integrity protocol),有两种模式：一：使用802.1x协议认证，
+二：使用PSK模式。
+    WPA2实现了802.11i的强制性元素，特别是Michael算法由公认的彻底安全的
+CCMP讯息认证码取代，而RC4也被AES取代。
+    PSK(pre-shared key)(或WPA个人版或WPA2个人版)密语可以是8到63个ASCII
+字符，或64个16进制数字。
+    用802.1x认证的版本叫做WPA企业版或WPA2企业版
+
+WPA = 802.1x + EAP(Entensible Authenticaiton Protocol) + 
+      TKIP(Temporal Key Integrity Protocol) + MIC(Message Integrity Code)
+从WPA的TKIP/MIC到WPA2的AES-CCMP
+
+WPA2 = IEEE 802.11i = IEEE 802.1x/EAP + AES-CCMP
+AES-CCMP(Advanced Encryption Standard - Counter mode with Cipher-block 
+chaining Message autentication code protocol)
+
+WPA VS WPA2
+----------------------------------------------------------------------------
+应用模式          |     WPA                           WPA2
+                  | 身份认证：IEEE 802.1x/EAP    | 身份认证：IEEE 802.1x/EAP
+                  | 加密：  TKIP/MIC             | 加密：  AES-CCMP
+企业应用模式      |                              |
+------------------|---------------------------------------------------------
+SOHO/个人应用模式 | 身份认证： PSK               | 身份认证： PSK
+                  | 加密： TKIP/MIC              | 加密： AES-CCMP
+----------------------------------------------------------------------------

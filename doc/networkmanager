@@ -1,0 +1,12 @@
+Points
+successfully setup a connection, the state of device is ACTIVATED
+
+org.freedesktop.NetworkManager.Device
+Properties
+    Udi - s - (read) 不是固定不变的，不要使用此来监视系统，用object path
+
+
+
+
+NetworkManager的用户密码是如何处理的
+系统的Notification是哪个interfae
