@@ -2,21 +2,27 @@
 #include <QApplication>
 #include <QRect>
 #include <QDesktopWidget>
+#include <QDBusConnection>
+#include <QDebug>
 
 #define WIDTH 300
 
 int main(int argc, char **argv) {
     QApplication app(argc, argv);
+    
+    if(!QDBusConnection::systemBus().isConnected()) {
+        qWarning()<<QStringLiteral("System DBus connection failed, Please try again.");
+        app.quit();
+    }
+    
     app.setApplicationName("networkmanager");
     app.setOrganizationName("分享zhe");
     QRect rect = app.desktop()->screenGeometry();
+    
     Window *window = new Window;
     window->setGeometry(rect.width() - WIDTH, 24, WIDTH, rect.height() - 24);
     
-    window->setAttribute (Qt::WA_ShowModal,true);
-    window->setWindowOpacity (1);
-    window->setWindowFlags (Qt::FramelessWindowHint);
-    window->setAttribute (Qt::WA_TranslucentBackground);
+
     window->show();
     return app.exec();
 }
