@@ -12,7 +12,7 @@ public:
     Window(QWebView *parent = NULL);
     ~Window(){}
 public Q_SLOTS:
-    void popup(QUrl url);
+    void popup(QUrl &url);
 protected:
     void focusOutEvent(QFocusEvent* event);
 signals:

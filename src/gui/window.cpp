@@ -18,14 +18,15 @@ Window::Window(QWebView *parent) : QWebView(parent) {
     
 }
 
-void Window::popup(QUrl url) {
+void Window::popup(QUrl &url) {
     //load html template
-    load(QUrl("qrc:/index.html"));
+    //load(QUrl("qrc:/index.html"));
+    load(url);
 }
 
 void Window::focusOutEvent(QFocusEvent*event) {
     if(event->type() == QFocusEvent::FocusOut) {
-        hide();
-        exit(EXIT_SUCCESS);
+        //hide();
+        //exit(EXIT_SUCCESS);
     }
 }

@@ -11,11 +11,14 @@ namespace Net {
 class Connection : public QObject {
     Q_OBJECT 
     Q_PROPERTY(QString id READ getID WRITE setID)
-    Q_PROPERTY(QUuid uuid READ getUUID WRITE setUUID)
+    Q_PROPERTY(QUuid uuid READ getUUID)
     Q_PROPERTY(Arr_Str permissions READ getPermissions WRITE setPermissions)
     Q_PROPERTY(bool autoConnect READ isAutoConnection WRITE enableAutoConnection)
     Q_PROPERTY(uint64_t timestamp READ getTimeStamp)
     Q_PROPERTY(C_Zone zone READ getZone WRITE setZone)
+    
+    Q_ENUMS(C_TYPE)
+    Q_ENUMS(C_Zone)
 public :
     Connection(QObject * parent = NULL): QObject(parent) {
         //initial
@@ -89,9 +92,8 @@ public Q_SLOTS:
     void setID(QString id) {this->id = id; }
     
     QUuid getUUID() {return uuid; }
-    void setUUID(QUuid uuid) { 
-//        uuid = QUuid::createUuid().toString().remove('{').remove('}');
-        this->uuid = uuid;
+    void setUUID() { 
+        uuid = QUuid::createUuid().toString().remove('{').remove('}');
     }
     
     Arr_Str getPermissions() { return permissions; }
@@ -111,9 +113,12 @@ public Q_SLOTS:
 
 class IP : public QObject {
     Q_OBJECT
+    Q_ENUMS(IP_Method)
+    
 public :
     IP(QObject *parent = NULL): QObject(parent) {}
     ~IP(){}
+    
     
     enum IP_Method {
         /* auto is specified, appropriate automatic method(DHCP, ppp) is used 
@@ -164,7 +169,6 @@ public :
      * ipv6 config successfully */
     bool may_fail;
     
-    
     IP_Method getMethod() { return method; }
     void setMethod(IP_Method method) { this->method = method; }
     
@@ -189,6 +193,19 @@ public :
 
 class IPv4: public IP {
     Q_OBJECT
+    Q_PROPERTY(IP_Method method READ getMethod WRITE setMethod)
+    Q_PROPERTY(Arr_UInt32 dns READ getDNS WRITE setDNS)
+    Q_PROPERTY(Arr_Str dns_search READ getDNSearch WRITE setDNSearch)
+    Q_PROPERTY(Arr_Arr_UInt32 addresses READ getAddresses WRITE setAddresses)
+    Q_PROPERTY(Arr_Arr_UInt32 routes READ getRoutes WRITE setRoutes)
+    Q_PROPERTY(bool ignore_auto_routes READ isIgnoreAutoRoute WRITE enableIgnoreAutoRoute)
+    Q_PROPERTY(bool ignore_auto_dns READ isIgnoreAutoDNS WRITE enableIgnoreAutoDNS)
+    Q_PROPERTY(QString dhcp_client_id READ getClientID WRITE setClientID)
+    Q_PROPERTY(bool dhcp_send_hostname READ isSendHostName WRITE enableSendHostName)
+    Q_PROPERTY(QString dhcp_hostname READ getHostName WRITE setHostName)
+    Q_PROPERTY(bool never_default READ isNeverDefault WRITE enableNeverDefault)
+    Q_PROPERTY(bool may_fail READ isMayFail WRITE enableMayFail)
+    
 public :
     IPv4(IP *parent = NULL) : IP(parent) {
         name = "ipv4";
@@ -241,6 +258,19 @@ public :
 
 class IPv6 : public IP {
     Q_OBJECT
+    
+    Q_PROPERTY(IP_Method method READ getMethod WRITE setMethod)
+    Q_PROPERTY(Arr_Byte dns READ getDNS WRITE setDNS)
+    Q_PROPERTY(Arr_Str dns_search READ getDNSearch WRITE setDNSearch)
+    Q_PROPERTY(Arr_Byte_UInt32_Byte addresses READ getAddresses WRITE setAddresses)
+    Q_PROPERTY(Arr_Byte_UInt32_Byte_UInt32 routes READ getRoutes WRITE setRoutes)
+    Q_PROPERTY(bool ignore_auto_routes READ isIgnoreAutoRoute WRITE enableIgnoreAutoRoute)
+    Q_PROPERTY(bool ignore_auto_dns READ isIgnoreAutoDNS WRITE enableIgnoreAutoDNS)
+    Q_PROPERTY(QString dhcp_hostname READ getHostName WRITE setHostName)
+    Q_PROPERTY(bool never_default READ isNeverDefault WRITE enableNeverDefault)
+    Q_PROPERTY(bool may_fail READ isMayFail WRITE enableMayFail)
+    Q_PROPERTY(int32_t ip6_privacy READ getPrivacy WRITE setPrivacy)
+    
 public :
     IPv6(IP *parent = NULL): IP(parent) {
         name = "ipv6";
@@ -250,6 +280,9 @@ public :
         may_fail = true;
         ip6_privacy = -1;
     }
+    ~IPv6(){}
+    
+    
     
     /* CAN NOT used in shared, link-local 
      * all other method used DNS servers as the only DNS server */  
