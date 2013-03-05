@@ -5,7 +5,11 @@
 #include <QDBusConnection>
 #include <QDebug>
 
+#include "net/network.h"
+
 #define WIDTH 300
+
+using namespace Net;
 
 int main(int argc, char **argv) {
     QApplication app(argc, argv);
@@ -24,5 +28,6 @@ int main(int argc, char **argv) {
     
 
     window->show();
+    Network network;
     return app.exec();
 }

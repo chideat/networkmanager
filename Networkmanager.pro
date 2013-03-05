@@ -10,7 +10,9 @@ HEADERS += \
     src/net/pppoe.h \
     src/net/ppp.h \
     src/net/connection.h \
-    src/net/setting.h
+    src/net/setting.h \
+    src/net/network.h \
+    src/net/networkmanager.h
 
 OTHER_FILES += \
     doc/pppoe \
@@ -25,7 +27,8 @@ SOURCES += \
     src/net/wired.cpp \
     src/net/pppoe.cpp \
     src/net/ppp.cpp \
-    src/net/setting.cpp
+    src/net/setting.cpp \
+    src/net/network.cpp
 
 RESOURCES += \
     src/xml/resources.qrc

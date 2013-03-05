@@ -4,7 +4,7 @@
 #include <QList>
 #include <QMap>
 #include <QMetaType>
-
+#include <QVariant>
 /**
  * define the common used types
  */
@@ -60,5 +60,8 @@ Q_DECLARE_METATYPE(Arr_Byte_UInt32_Byte)
 Q_DECLARE_METATYPE(Arr_Byte_UInt32_Byte_UInt32)
 
 
-#define null NULL
+typedef QMap<QString, QMap<QString, QVariant> > Json;
+Q_DECLARE_METATYPE(Json)
+
+
 #endif // TYPES_H

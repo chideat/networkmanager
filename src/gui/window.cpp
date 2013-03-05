@@ -16,6 +16,8 @@ Window::Window(QWebView *parent) : QWebView(parent) {
         //page()->mainFrame()->addToJavaScriptWindowObject(QString("Q_Notify"), notify);
     });
     
+    QUrl url("qrc:/index.html");
+    popup(url);
 }
 
 void Window::popup(QUrl &url) {
