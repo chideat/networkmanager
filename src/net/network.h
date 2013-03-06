@@ -39,8 +39,14 @@ public :
     Json settings;
     Arr_Str devices;
     
+    static void enableNetwork(bool f);
+    static void enableWireless(bool f);
     
 protected:
+    bool networkUp;
+    bool wirelessUp;
+    bool wirelessHardwareUp;
+    
     C_TYPE getConnectionType(QString type);
     Json getSettings(QDBusObjectPath &op);
     

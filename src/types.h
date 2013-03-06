@@ -36,6 +36,9 @@ Q_DECLARE_METATYPE(Arr_UInt32)
 typedef QList<QList<uint32_t> > Arr_Arr_UInt32;
 Q_DECLARE_METATYPE(Arr_Arr_UInt32)
 
+typedef QMap<QString, QVariant> Arr_Var;
+Q_DECLARE_METATYPE(Arr_Var)
+
 typedef struct {
     QByteArray addr; //ipv6 addr, with network byte order
     uint32_t prefox;   //ipv6 prefix

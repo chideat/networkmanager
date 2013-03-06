@@ -12,6 +12,45 @@
 Net::Network::Network(QObject *parent): QObject(parent) {
     qDBusRegisterMetaType<Json>();
     
+    //get device state
+    QDBusInterface inter_property(
+                DBUS_NET_SERVICE,
+                DBUS_NET_PATH,
+                DBUS_NET_PROPERTIES,
+                QDBusConnection::systemBus());
+    QDBusReply<Arr_Var>  pros = inter_property.call(QLatin1String(DBUS_NET_PROPERTIES_GetAll),
+                                                    DBUS_NET_INTERFACE);
+    if(pros.isValid()) {
+        Arr_Var result = pros.value();
+        networkUp = result[DBUS_NET_INTERFACE_NetworkingEnabled].toBool();
+        wirelessUp = result[DBUS_NET_INTERFACE_WirelessEnabled].toBool();
+        wirelessHardwareUp = result[DBUS_NET_INTERFACE_WirelessHardwareEnabled].toBool();
+        if(networkUp)
+            qDebug()<<"enabled";
+    }
+    else {
+        qDebug()<<pros.error().message();
+    }
+    
+    
+    QDBusInterface inter_device(
+                DBUS_NET_SERVICE,
+                DBUS_NET_PATH,
+                DBUS_NET_INTERFACE,
+                QDBusConnection::systemBus());
+
+    //get device
+    QDBusReply<QList<QDBusObjectPath> > reply_device = inter_device.call(QLatin1String(DBUS_NET_INTERFACE_GetDevices));
+    if(reply_device.isValid()) {
+        foreach(QDBusObjectPath path, reply_device.value()) {
+            devices.append(path.path());
+        }
+    }
+    else {
+        qDebug()<<reply_device.error().message();
+    }
+    
+    
     //get connections 
     QDBusInterface interface(
                 DBUS_NET_SERVICE,
@@ -41,21 +80,7 @@ Net::Network::Network(QObject *parent): QObject(parent) {
                      QString(DBUS_NET_IFACE_SETTINGS_CONNECTION_SIGNAL_Removed),
                      this, SLOT(connectionRemoved()));
     
-    //get device
-    QDBusInterface inter_device(
-                DBUS_NET_SERVICE,
-                DBUS_NET_PATH,
-                DBUS_NET_INTERFACE,
-                QDBusConnection::systemBus());
-    QDBusReply<QList<QDBusObjectPath> > reply_device = inter_device.call(QLatin1String(DBUS_NET_INTERFACE_GetDevices));
-    if(reply_device.isValid()) {
-        foreach(QDBusObjectPath path, reply_device.value()) {
-            devices.append(path.path());
-        }
-    }
-    else {
-        qDebug()<<reply_device.error().message();
-    }
+
 }
 
 Net::Network::~Network() {}
@@ -95,4 +120,9 @@ Json Net::Network::getSettings(QDBusObjectPath &op) {
 
 void Net::Network::connectionRemoved() {
     qDebug()<<"connection Removed";
+}
+
+
+void Net::Network::enableNetwork(bool f) {
+    
 }

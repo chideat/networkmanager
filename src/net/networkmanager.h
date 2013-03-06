@@ -71,4 +71,18 @@
 #define CONNECTION_TYPE_PPPoE PRO_PPPoE
 #define CONNECTION_TYPE_802_11_WIRELESS PRO_802_11_WIRELESS
 
+//properties
+//org.freedesktop.DBus.Properties
+#define DBUS_NET_PROPERTIES "org.freedesktop.DBus.Properties"
+#define DBUS_NET_PROPERTIES_Get "Get"
+#define DBUS_NET_PROPERTIES_GetAll "GetAll"
+#define DBUS_NET_PROPERTIES_Set "Set"
+
+#define DBUS_NET_INTERFACE_NetworkingEnabled "NetworkingEnabled"
+#define DBUS_NET_INTERFACE_WirelessHardwareEnabled "WirelessHardwareEnabled"
+#define DBUS_NET_INTERFACE_WirelessEnabled "WirelessEnabled"
+#define DBUS_NET_INTERFACE_Version "Version"
+#define DBUS_NET_INTERFACE_State "State"
+
+
 #endif // NETWORKMANAGER_H

@@ -1,47 +1,136 @@
-@charset UTF-8
 body {
-    width: 300px;
-    height: 500px;
+    -webkit-user-select: none;
+    overflow:hidden;
+}
+
+ul {
+    list-style-type:none;
     margin: 0;
 }
 
-#container {
-
+ul li {
+    margin: 0;
+    padding: 0;
+    display: block;
 }
 
-#title {
-    width:100%;
-    height: 40px;
-    padding-left: 10px;
+
+
+#box {
+    position: absolute;
+    top:0px;
+    bottom: 0px;
+    left: -webkit-calc((100% - 300px) / 2);
+    width: 300px;
+    background-color: #9F9F9F;
 }
 
-/********************************/
+#state {
+    height: 100px;
+    background-color: #BEBEBE;
+}
+
+#device-list {
+    height: -webkit-calc(100% - 120px);
+    width: 100%;
+    overflow-x:hidden;
+    overflow-y:auto;
+}
+
 .device {
     float: left;
     clear: both;
     width: 100%;
 }
 
-.info {
+.item {
+    float: left;
+    clear: both;
     width: 100%;
-    height: 40px;
+    border-top:1px solid #ADADAD;
 }
 
 .icon {
     float: left;
-    width: 24px;
-    height: 24px;
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 100%;
+    padding:0;
 }
 
-.connection {
+.icon img {
+    width: 24px;
+    height: 24px;
+    margin-top: 3px;
+}
+
+.id {
     float: left;
-    padding-left: 20px;
+    font-size:18px;
+    line-height:18px;
+    font-family: Courier;
+    text-overflow: clip;
+    padding: 7px 5px 5px 5px;
+    cursor: default;
+    display:block;
 }
 
 .status {
-    display: none;
+    float: right;
+    margin-right: 10px;
 }
 
-.settings {
+.status img {
+    width: 50px;
+    height: 24px;
+    margin-top: 3px;
+}
+
+.item .setting {
+    display:none;
+    float: left;
+    clear: both;
+    width: 100%;
+    padding: 2px 0 2px 0;
+    background-color: white;
+}
+
+.setting div {
+    float: left;
+}
+
+.setting .connect {
+    float: right;
+    margin-right: 10px;
+}
+
+/**************************/
+#popup {
+    height: 20px;
+    width: 80px;
+    margin-left: -webkit-calc((100% - 80px)/2);
+    border-radius: 40px 40px 0 0 / 20px 20px 0 0;
+    background-color: #DFDFDF;
+}
+
+#advanced {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     display: none;
+    float: left;
+    clear: both;
+    z-index: 3px;
+    background-color: #8E8E8E;
+    width: 100%;
+    height: 400px;
+}
+
+#popdown {
+    height: 20px;
+    width: 80px;
+    margin-left: -webkit-calc((100% - 80px) / 2);
+    border-radius: 0 0 40px 40px / 0 0 20px 20px;
+    background-color: #DFDFDF;
 }
