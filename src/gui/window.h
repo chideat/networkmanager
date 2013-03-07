@@ -17,7 +17,7 @@ public:
     Network *network;
 public Q_SLOTS:
     void popup(QUrl &url);
-    
+    void insertItem(Setting *set);
 protected:
     void focusOutEvent(QFocusEvent* event);
 signals:

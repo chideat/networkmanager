@@ -12,7 +12,6 @@
  */
 Net::Network::Network(QObject *parent): QObject(parent) {
     qDBusRegisterMetaType<Json>();
-    
 }
 
 Net::Network::~Network() {
@@ -139,6 +138,10 @@ void Net::Network::addConnection(QString path) {
     });
 }
 
+void Net::Network::newConnection(QDBusObjectPath path) {
+    addConnection(path.path());
+}
+
 void Net::Network::enableNetwork(bool f) {
     if(!networkUp) {
         f;
@@ -151,5 +154,15 @@ void Net::Network::enableWireless(bool f) {
     }
     else if(wirelessHardwareUp && !f) {
         
+    }
+}
+
+//here send connect reference
+void Net::Network::tryConnect(QString u) {
+    for(int i = 0;i < settings.length(); i ++) {
+        if(settings[PRO_CONNECTION][PRO_CONNECTION_UUID] == u) {
+            
+            break;
+        }
     }
 }

@@ -14,7 +14,9 @@ ul li {
     display: block;
 }
 
-
+span {
+    cursor: default;
+}
 
 #box {
     position: absolute;
@@ -142,10 +144,18 @@ ul li {
     clear: both;
     width: 100%;
     height: 30px;
+    margin: 10px;
 }
 
-#action-list > div img  {
-    width: 22px;
-    height: 22px;
-    margin: 4px 0 4px 0;
+#new-connection {
+    background-color: red;
 }
+
+#network {
+    background-color: green;
+}
+
+#wireless {
+    background-color: blue;
+}
+

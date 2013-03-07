@@ -1,5 +1,17 @@
 //functions define
-function enableDevice(device) {
+function js_insertItem(id, uuid, type, auto) {
+    item = '<div class="item" uuid="' + uuid +'">' +
+            '<div>' + 
+            '<div class="icon"><img src="qrc:/img/wired.png" alt="wired"></img></div> ' + 
+            '<div class="id">'+ id +'</div>' + 
+            '<div class="status"></div>' + 
+            '</div>' + 
+            '<div class="setting">' +
+            '<div><img src="qrc:/img/key.png" alt="KEY"></img></div>' +
+            '<div><img src="qrc:/img/setting.png" alt="setting"></img></div>' +
+            '<div class="connect" uuid="' + uuid +'"><img src="qrc:/img/setting.png" alt="setting"></img></div>' + 
+            '</div></div>';
+    $(".connection").append($(item));
 }
 
 function load() {
@@ -7,27 +19,31 @@ function load() {
         //allow showing device list
         $("#device-list").show();
         $("#network").addClass("enabled");
-    }
-    else 
-    if(Q_Network.wirelessUp) {
-        $("#device-list").show();
-        $("#wireless").addClass("enabled");
+        
+        if(Q_Network.wirelessUp) {
+            $("#wireless").addClass("enabled");
+        }
+        else {
+            $("#wireless").removeClass("enabled");
+        }
     }
     else {
-        $("#wireless").removeClass("enabled");
+        $("#network").removeClass("enabled");
     }
-    
 }
 
 //actions
 $(document).ready(function(){
-    $(".item").on("click",function() {
+    $(document).on("click",".item", function() {
         $(this).find(".setting").show();
     });
     
-    
-    $(".item").on("mouseleave",function() {
+    $(document).on("mouseleave", ".item",function() {
         $(this).find(".setting").hide();
+    });
+    
+    $(document).on("click", ".connect", function() {
+        Q_Network.tryConnect($(this).attr("uuid"));
     });
     
     $("#popup").on("click", function() {
@@ -43,14 +59,14 @@ $(document).ready(function(){
         event.stopPropagation();
     });
     
-    $(".button").on("click", function(event){
-        alert($(event.target).id);
-        if($(event.target) === $("#network")) {
-                Q_Network.enableNetwork(!$("#network").hasClass("enabled"));
-        }
-        else if($(event.target) === $("#wireless")) {
-                Q_Network.enableWireless(!$("#wireless").hasClass("enabled"));
-        }
+    $("#network").on("click", function(){
+        alert("enable network");
+    });
+    $("#wireless").on("click", function(){
+        alert("enabled wireless");
+    });
+    $("#new-connection").on("click", function(){
+        alert("new-connection");
     });
     
     //here connect javascript function to qt signals

@@ -27,6 +27,8 @@ class Network: public QObject {
     Q_PROPERTY(bool networkUp READ isNetworkUp)
     Q_PROPERTY(bool wirelessHardwareUp READ isWirelessHardwareUp)
     Q_PROPERTY(bool wirelessUp READ isWirelessUp)
+    Q_PROPERTY(QList<Setting *> settings READ getSettings)
+    
 public :
     Network(QObject *parent = NULL);
     ~Network();
@@ -58,13 +60,18 @@ protected:
 public Q_SLOTS:
     void load();
     void addConnection(QString path);
+    void tryConnect(QString u);
     
-    Arr_Var getProperties(QString inter);
     void getConnections();
     void getDevices();
+    Arr_Var getProperties(QString inter);
+    QList<Setting *> getSettings() { return settings; }
+    
+    void newConnection(QDBusObjectPath path);
     
 Q_SIGNALS:
     void loadFinished();
+    
 private :
     uint32_t counter;
 };

@@ -16,6 +16,8 @@ Net::Setting::Setting(QString s, QObject *parent):QObject(parent) {
                                          QString(DBUS_NET_IFACE_SETTINGS_CONNECTION), 
                                          QString(DBUS_NET_IFACE_SETTINGS_CONNECTION_SIGNAL_Updated),
                                          this, SIGNAL(updated()));
+    
+    initSettings();
 }
 
 void Net::Setting::_delete() {
@@ -26,7 +28,7 @@ void Net::Setting::_delete() {
     interface.call(QLatin1String(DBUS_NET_IFACE_SETTINGS_CONNECTION_Delete));
 }
 
-void Net::Setting::getSettings() {
+void Net::Setting::initSettings() {
     QDBusInterface interface (
                 DBUS_NET_SERVICE,
                 path, DBUS_NET_IFACE_SETTINGS_CONNECTION, 
