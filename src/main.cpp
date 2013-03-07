@@ -28,7 +28,6 @@ int main(int argc, char **argv) {
     
 
     window->show();
-    Network network;
     
     return app.exec();
 }

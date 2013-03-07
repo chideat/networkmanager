@@ -1,12 +1,11 @@
 #ifndef NETWORK_H
 #define NETWORK_H
 
-#include <QObject>
 #include <QDBusObjectPath>
 #include "../types.h"
 
-#include "wired.h"
-#include "wireless.h"
+#include "device.h"
+#include "setting.h"
 
 namespace Net {
 /**
@@ -25,6 +24,9 @@ namespace Net {
 class Network: public QObject {
     Q_OBJECT
     Q_ENUMS(C_TYPE)
+    Q_PROPERTY(bool networkUp READ isNetworkUp)
+    Q_PROPERTY(bool wirelessHardwareUp READ isWirelessHardwareUp)
+    Q_PROPERTY(bool wirelessUp READ isWirelessUp)
 public :
     Network(QObject *parent = NULL);
     ~Network();
@@ -36,30 +38,42 @@ public :
         PPPoE
     };
     
-    Json settings;
-    Arr_Str devices;
+    QList<Setting *> settings;
+    QList<Device *> devices;
     
-    static void enableNetwork(bool f);
-    static void enableWireless(bool f);
+    void enableNetwork(bool f);
+    void enableWireless(bool f);
+    
+    bool isNetworkUp() { return networkUp; }
+    bool isWirelessUp() { return wirelessUp; }
+    bool isWirelessHardwareUp() { return wirelessHardwareUp; }
     
 protected:
     bool networkUp;
     bool wirelessUp;
     bool wirelessHardwareUp;
     
-    C_TYPE getConnectionType(QString type);
-    Json getSettings(QDBusObjectPath &op);
+    C_TYPE getConnectionType(QString &type);
     
-protected Q_SLOTS:
-    void newConnection(QDBusObjectPath op);
-    void connectionRemoved();
+public Q_SLOTS:
+    void load();
+    void addConnection(QString path);
     
+    Arr_Var getProperties(QString inter);
+    void getConnections();
+    void getDevices();
     
+Q_SIGNALS:
+    void loadFinished();
+private :
+    uint32_t counter;
 };
 /**
  * Questions
- * 1.how to select the device?
+ * 1.how to select the device?[2013-3-6]
  *  use connection's type
+ * 2. when to load the devices settings? [2013-3-7]
+ *  
  */
 
 }

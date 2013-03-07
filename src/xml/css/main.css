@@ -128,9 +128,24 @@ ul li {
 }
 
 #popdown {
+    float: left;
+    clear: both;
     height: 20px;
     width: 80px;
     margin-left: -webkit-calc((100% - 80px) / 2);
     border-radius: 0 0 40px 40px / 0 0 20px 20px;
     background-color: #DFDFDF;
+}
+
+#action-list > div {
+    float: left;
+    clear: both;
+    width: 100%;
+    height: 30px;
+}
+
+#action-list > div img  {
+    width: 22px;
+    height: 22px;
+    margin: 4px 0 4px 0;
 }

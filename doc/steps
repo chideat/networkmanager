@@ -6,3 +6,14 @@ pppoe connection steps
 2. active the pppoe connection procession 
 3. try ppp connection
 4. connected or connection failed
+
+
+[2013-3-7]
+i make a miss take that with C++, i didn't take the right object as the correct object.
+at first, i thought from global the i designed the networkmanager, but it's wrong, 
+many objects of the system couldn't be accessed by me. and my classes were 
+directly from networkmanager's UI. it's teriably wrong.
+
+now i've changed my desgin, every connection is en object[original so], every device
+[no matter what device it is, ethernet card, wireless card .etc.]. 
+and the most important is network class. it take over all the classes.

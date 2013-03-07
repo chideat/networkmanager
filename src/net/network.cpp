@@ -4,6 +4,7 @@
 #include <QDBusReply>
 #include <QDBusMetaType>
 #include <QDebug>
+
 /**
  * @brief Net::Network
  * @param parent
@@ -12,81 +13,112 @@
 Net::Network::Network(QObject *parent): QObject(parent) {
     qDBusRegisterMetaType<Json>();
     
+}
+
+Net::Network::~Network() {
+    for(int i = 0; i < devices.length(); i ++) {
+        delete devices.at(i);
+    }
+    devices.clear();
+    
+    for(int i = 0;i < settings.length(); i++) {
+        delete settings[i];
+    }
+    settings.clear();
+}
+
+
+void Net::Network::load() {
+    
     //get device state
-    QDBusInterface inter_property(
+    networkUp = false;
+    wirelessUp = false;
+    wirelessHardwareUp = false;
+    Arr_Var result_pro = getProperties(DBUS_NET_INTERFACE);
+    if(!result_pro.isEmpty()) {
+        networkUp = result_pro[DBUS_NET_INTERFACE_NetworkingEnabled].toBool();
+        wirelessUp = result_pro[DBUS_NET_INTERFACE_WirelessEnabled].toBool();
+        wirelessHardwareUp = result_pro[DBUS_NET_INTERFACE_WirelessHardwareEnabled].toBool();
+    }
+    //get device
+    getDevices();
+    //get connections 
+    getConnections();
+    
+    QDBusConnection::systemBus()
+            .connect(QString(DBUS_NET_SERVICE), QString(DBUS_NET_PATH_SETTINGS), QString(DBUS_NET_IFACE_SETTINGS),
+                     QString(DBUS_NET_IFACE_SETTINGS_SIGNAL_NewConnection),
+                     this, SLOT(newConnection(QDBusObjectPath)));
+    
+    //tell the front end it's time to load the settings
+    emit loadFinished();
+}
+
+/**
+ * @brief Net::Network::getProperties
+ * @param inter
+ * @return
+ * get all properties with getall 
+ */
+Arr_Var Net::Network::getProperties(QString inter) {
+    QDBusInterface interface(
                 DBUS_NET_SERVICE,
                 DBUS_NET_PATH,
                 DBUS_NET_PROPERTIES,
                 QDBusConnection::systemBus());
-    QDBusReply<Arr_Var>  pros = inter_property.call(QLatin1String(DBUS_NET_PROPERTIES_GetAll),
-                                                    DBUS_NET_INTERFACE);
+    QDBusReply<Arr_Var>  pros;
+    counter = 0;
+    do {
+        pros = interface.call(QLatin1String(DBUS_NET_PROPERTIES_GetAll), inter);
+    }while(!pros.isValid() && counter++ < COUNT);
+    
     if(pros.isValid()) {
-        Arr_Var result = pros.value();
-        networkUp = result[DBUS_NET_INTERFACE_NetworkingEnabled].toBool();
-        wirelessUp = result[DBUS_NET_INTERFACE_WirelessEnabled].toBool();
-        wirelessHardwareUp = result[DBUS_NET_INTERFACE_WirelessHardwareEnabled].toBool();
-        if(networkUp)
-            qDebug()<<"enabled";
+        return  pros.value();
     }
     else {
-        qDebug()<<pros.error().message();
+        return Arr_Var();
     }
-    
-    
-    QDBusInterface inter_device(
+}
+
+void Net::Network::getDevices() {
+    QDBusInterface interface(
                 DBUS_NET_SERVICE,
                 DBUS_NET_PATH,
                 DBUS_NET_INTERFACE,
                 QDBusConnection::systemBus());
-
     //get device
-    QDBusReply<QList<QDBusObjectPath> > reply_device = inter_device.call(QLatin1String(DBUS_NET_INTERFACE_GetDevices));
+    QDBusReply<QList<QDBusObjectPath> > reply_device;
+    counter = 0;
+    do {
+        reply_device = interface.call(QLatin1String(DBUS_NET_INTERFACE_GetDevices));
+    }while(!reply_device.isValid() && counter++ < COUNT);
     if(reply_device.isValid()) {
         foreach(QDBusObjectPath path, reply_device.value()) {
-            devices.append(path.path());
+            devices<<(new Net::Device(path.path()));
         }
     }
-    else {
-        qDebug()<<reply_device.error().message();
-    }
-    
-    
-    //get connections 
+}
+
+void Net::Network::getConnections() {
     QDBusInterface interface(
                 DBUS_NET_SERVICE,
                 DBUS_NET_PATH_SETTINGS,
                 DBUS_NET_IFACE_SETTINGS,
                 QDBusConnection::systemBus());
-    QDBusReply<QList<QDBusObjectPath> > reply = interface.call(QLatin1String(DBUS_NET_IFACE_SETTINGS_ListConnections));
+    QDBusReply<QList<QDBusObjectPath> > reply; 
+    counter = 0;
+    do {
+        reply = interface.call(QLatin1String(DBUS_NET_IFACE_SETTINGS_ListConnections));
+    }while(!reply.isValid() && counter++ < COUNT);
     if(reply.isValid()) {
         //foreach settings and store them to the setting
         foreach(QDBusObjectPath conn, reply.value()) {
-            settings[conn.path().toHtmlEscaped()] = getSettings(conn)[PRO_CONNECTION];
-            settings[conn.path().toHtmlEscaped()][PRO_CONNECTION_TYPE] 
-                    = getConnectionType(settings[conn.path().toHtmlEscaped()][PRO_CONNECTION_TYPE].toString() );
+            addConnection(conn.path());
         }
     }
-    else {
-        // get connections error
-        qDebug()<<reply.error().message();
-    }
-    QDBusConnection::systemBus()
-            .connect(QString(DBUS_NET_SERVICE), QString(DBUS_NET_PATH_SETTINGS), QString(DBUS_NET_IFACE_SETTINGS),
-                     QString(DBUS_NET_IFACE_SETTINGS_SIGNAL_NewConnection),
-                     this, SLOT(newConnection(QDBusObjectPath)));
-    //connection remove
-    QDBusConnection::systemBus()
-            .connect(QString(), QString(), QString(DBUS_NET_IFACE_SETTINGS_CONNECTION),
-                     QString(DBUS_NET_IFACE_SETTINGS_CONNECTION_SIGNAL_Removed),
-                     this, SLOT(connectionRemoved()));
-    
-
 }
 
-Net::Network::~Network() {}
-
-
-Net::Network::C_TYPE Net::Network::getConnectionType(QString type) {
+Net::Network::C_TYPE Net::Network::getConnectionType(QString &type) {
     if(type == CONNECTION_TYPE_802_3_ETHERNET) 
         return Net::Network::WIRED;
     else if(type == CONNECTION_TYPE_802_11_WIRELESS)
@@ -97,32 +129,27 @@ Net::Network::C_TYPE Net::Network::getConnectionType(QString type) {
 }
 
 
-void Net::Network::newConnection(QDBusObjectPath op) {
-    qDebug()<<op.path();
+void Net::Network::addConnection(QString path) {
+    Net::Setting *tmp = new Net::Setting(path);
+    settings<<tmp;
+    connect(tmp, &Net::Setting::removed, [=]() {
+        Net::Setting *tmp = qobject_cast<Net::Setting *>(sender());
+        settings.removeAt(settings.indexOf(tmp));
+        delete tmp;
+    });
 }
-
-Json Net::Network::getSettings(QDBusObjectPath &op) {
-    QDBusInterface connection(
-                DBUS_NET_SERVICE,
-                op.path(),
-                DBUS_NET_IFACE_SETTINGS_CONNECTION,
-                QDBusConnection::systemBus());
-    QDBusReply<Json> r = connection.call(QLatin1String(DBUS_NET_IFACE_SETTINGS_CONNECTION_GetSettings));
-    if(r.isValid()) {
-        // add connection to settings
-        return r.value();
-    }
-    else {
-        qDebug()<<r.error().message();
-        return Json();
-    }
-}
-
-void Net::Network::connectionRemoved() {
-    qDebug()<<"connection Removed";
-}
-
 
 void Net::Network::enableNetwork(bool f) {
-    
+    if(!networkUp) {
+        f;
+    }
+}
+
+void Net::Network::enableWireless(bool f) {
+    if(wirelessHardwareUp && f) {
+        
+    }
+    else if(wirelessHardwareUp && !f) {
+        
+    }
 }

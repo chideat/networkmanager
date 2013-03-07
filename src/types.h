@@ -66,5 +66,6 @@ Q_DECLARE_METATYPE(Arr_Byte_UInt32_Byte_UInt32)
 typedef QMap<QString, QMap<QString, QVariant> > Json;
 Q_DECLARE_METATYPE(Json)
 
+#define COUNT 5
 
 #endif // TYPES_H

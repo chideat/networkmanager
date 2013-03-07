@@ -1,19 +1,32 @@
 #ifndef SETTING_H
 #define SETTING_H
 
-#include "wired.h"
-#include "wireless.h"
-#include "connection.h"
-#include "ppp.h"
-#include "pppoe.h"
+#include <QObject>
+#include "../types.h"
 
 namespace Net {
 
 class Setting : public QObject {
     Q_OBJECT
 public:
-    Setting(QObject *parent = NULL);
+    Setting(QString s, QObject *parent = NULL);
     ~Setting(){}
+    
+    QString path;
+    Json settings;
+public Q_SLOTS:
+    void _delete();
+    void getSettings();
+    void getSecrets(QString s);
+    QVariant get(QString container, QString key);
+    void set(QString container, QString key, QVariant value);
+    
+Q_SIGNALS:
+    void removed();
+    void updated();
+    
+private:
+    uint32_t counter;
 };
 
 }
