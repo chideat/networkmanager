@@ -3,7 +3,7 @@
 
 #include <QDBusObjectPath>
 #include "../types.h"
-
+#include "networkmanager.h"
 #include "device.h"
 #include "setting.h"
 
@@ -55,7 +55,7 @@ protected:
     bool wirelessUp;
     bool wirelessHardwareUp;
     
-    C_TYPE getConnectionType(QString &type);
+    C_TYPE getConnectionType(QString type);
     
 public Q_SLOTS:
     void load();
@@ -64,6 +64,8 @@ public Q_SLOTS:
     
     void getConnections();
     void getDevices();
+    QString getDevice(DEVICE_TYPE t);
+    
     Arr_Var getProperties(QString inter);
     QList<Setting *> getSettings() { return settings; }
     

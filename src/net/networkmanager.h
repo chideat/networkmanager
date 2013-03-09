@@ -6,6 +6,8 @@
 /*  NetworkManager Macro  */
 #define  DBUS_NET_SERVICE NM_DBUS_SERVICE
 
+#define DBUS_NET_PATH_SPECIFIC "/"
+
 #define  DBUS_NET_PATH NM_DBUS_PATH
 #define  DBUS_NET_INTERFACE NM_DBUS_INTERFACE
 #define  DBUS_NET_INTERFACE_DEVICE NM_DBUS_INTERFACE_DEVICE
@@ -91,6 +93,7 @@
 
 
 //device type define
+#define DEVICE_TYPE NMDeviceType
 #define DEVICE_TYPE_ETHERNET NM_DEVICE_TYPE_ETHERNET
 #define DEVICE_TYPE_WIFI NM_DEVICE_TYPE_WIFI
 
@@ -109,5 +112,25 @@
 #define DEVICE_STATE_DEACTIVATING NM_DEVICE_STATE_DEACTIVATING
 #define DEVICE_STATE_FAILED NM_DEVICE_STATE_FAILED
 
+//properties
+#define DEVICE_StateReason "StateResaon"
+#define DEVICE_Autoconnect "Autoconnect"
+#define DEVICE_FirmwareMissing "FirmwareMissing"
+#define DEVICE_Managed "Managed"
+#define DEVICE_ActiveConnection "ActiveConnection"
+#define DEVICE_Dhcp4Config "Dhcp4Config"
+#define DEVICE_Dhcp6Config "Dhcp6Config"
+#define DEVICE _Ip4Config "Ip4Config"
+#define DEVICE_Ip6Config "Ip6Config"
+#define DEVICE_Driver "Driver"
+#define DEVICE_DriverVersion "DriverVersion"
+#define DEVICE_FirmwareVersion "FirmwareVersion"
+#define DEVICE_Interface "Interface"
+#define DEVICE_IpInterface "IpInterface"
+#define DEVICE_Udi "Udi"
+#define DEVICE_Capabilities "Capabilities"
+#define DEVICE_DeviceType "DeviceType"
+#define DEVICE_Ip4Address "Ip4Address"
+#define DEVICE_State "State"
 
 #endif // NETWORKMANAGER_H

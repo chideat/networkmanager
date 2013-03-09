@@ -4,7 +4,7 @@
 #include <QDBusReply>
 #include <QDBusMetaType>
 #include <QDebug>
-
+#include "../notification.h"
 /**
  * @brief Net::Network
  * @param parent
@@ -37,7 +37,8 @@ void Net::Network::load() {
     if(!result_pro.isEmpty()) {
         networkUp = result_pro[DBUS_NET_INTERFACE_NetworkingEnabled].toBool();
         wirelessUp = result_pro[DBUS_NET_INTERFACE_WirelessEnabled].toBool();
-        wirelessHardwareUp = result_pro[DBUS_NET_INTERFACE_WirelessHardwareEnabled].toBool();
+        wirelessHardwareUp = 
+                result_pro[DBUS_NET_INTERFACE_WirelessHardwareEnabled].toBool();
     }
     //get device
     getDevices();
@@ -45,7 +46,8 @@ void Net::Network::load() {
     getConnections();
     
     QDBusConnection::systemBus()
-            .connect(QString(DBUS_NET_SERVICE), QString(DBUS_NET_PATH_SETTINGS), QString(DBUS_NET_IFACE_SETTINGS),
+            .connect(QString(DBUS_NET_SERVICE), QString(DBUS_NET_PATH_SETTINGS), 
+                     QString(DBUS_NET_IFACE_SETTINGS),
                      QString(DBUS_NET_IFACE_SETTINGS_SIGNAL_NewConnection),
                      this, SLOT(newConnection(QDBusObjectPath)));
     
@@ -117,7 +119,7 @@ void Net::Network::getConnections() {
     }
 }
 
-Net::Network::C_TYPE Net::Network::getConnectionType(QString &type) {
+Net::Network::C_TYPE Net::Network::getConnectionType(QString type) {
     if(type == CONNECTION_TYPE_802_3_ETHERNET) 
         return Net::Network::WIRED;
     else if(type == CONNECTION_TYPE_802_11_WIRELESS)
@@ -144,7 +146,7 @@ void Net::Network::newConnection(QDBusObjectPath path) {
 
 void Net::Network::enableNetwork(bool f) {
     if(!networkUp) {
-        f;
+        f = false;
     }
 }
 
@@ -160,9 +162,98 @@ void Net::Network::enableWireless(bool f) {
 //here send connect reference
 void Net::Network::tryConnect(QString u) {
     for(int i = 0;i < settings.length(); i ++) {
-        if(settings[PRO_CONNECTION][PRO_CONNECTION_UUID] == u) {
+        Net::Setting *tmp = settings[i];
+        if(tmp->getSettings()[PRO_CONNECTION][PRO_CONNECTION_UUID] == u) {
+            //get object path
+            QDBusInterface interface(DBUS_NET_SERVICE, DBUS_NET_PATH_SETTINGS,
+                                     DBUS_NET_IFACE_SETTINGS, QDBusConnection::systemBus());
+            
+            QDBusReply<QDBusObjectPath> reply = interface.call(
+                        QString(DBUS_NET_IFACE_SETTINGS_GetConnectionByUuid),
+                        QVariant::fromValue(u));
+            if(!reply.isValid()) {
+                return ;
+            }
+            QDBusObjectPath path = reply.value();
+            switch (getConnectionType(
+                        tmp->getSettings()[PRO_CONNECTION][PRO_CONNECTION_TYPE]
+                        .toString())) {
+            case Net::Network::WIRED: {
+                QDBusObjectPath device(getDevice(DEVICE_TYPE_ETHERNET));
+                QDBusObjectPath specific(DBUS_NET_PATH_SPECIFIC);
+                QDBusInterface conn(DBUS_NET_SERVICE, DBUS_NET_PATH, 
+                                    DBUS_NET_INTERFACE,QDBusConnection::systemBus());
+                QDBusReply<QDBusObjectPath> actived = conn.call(
+                            QString(DBUS_NET_INTERFACE_ActivateConnection),
+                            QVariant::fromValue(path), QVariant::fromValue(device),  
+                            QVariant::fromValue(specific));
+                if(actived.isValid()) {
+                    QDBusObjectPath activedPath = actived.value();
+                    //tmp->getSettings()[DBUS_NET_INTERFACE_ActivateConnection] = activedPath.path();
+                }
+                break;
+            }
+            case Net::Network::WIRELESS: {
+                QDBusObjectPath device(getDevice(DEVICE_TYPE_WIFI));
+                QDBusObjectPath specific(DBUS_NET_PATH_SPECIFIC);
+                QDBusInterface conn(DBUS_NET_SERVICE, DBUS_NET_PATH, 
+                                    DBUS_NET_INTERFACE, QDBusConnection::systemBus());
+                QDBusReply< QDBusObjectPath> actived = conn.call(
+                            QString(DBUS_NET_INTERFACE_ActivateConnection), 
+                            QVariant::fromValue(path), QVariant::fromValue(device), 
+                            QVariant::fromValue(specific));
+                if(actived.isValid()) {
+                    QDBusObjectPath activedPath = actived.value();
+                   //tmp->getSettings()[DBUS_NET_INTERFACE_ActivateConnection] = activedPath.path();
+                }
+                break;
+            }
+            case Net::Network::PPPoE : {
+                //check device state 
+                //first 802-3-ethernet network
+                for(int i = 0; i < devices.length();i ++) {
+                    Net::Device *d = devices.at(i);
+                    if(d->getProperties()[DEVICE_State].toUInt() == DEVICE_STATE_ACTIVATED ) {
+                        QDBusObjectPath device(d->getDevice());
+                        QDBusObjectPath specific(DBUS_NET_PATH_SPECIFIC);
+                        QDBusInterface conn(DBUS_NET_SERVICE, DBUS_NET_PATH, 
+                                            DBUS_NET_INTERFACE, QDBusConnection::systemBus());
+                        QDBusReply< QDBusObjectPath> actived = conn.call(
+                                    QString(DBUS_NET_INTERFACE_ActivateConnection), 
+                                    QVariant::fromValue(path), QVariant::fromValue(device), 
+                                    QVariant::fromValue(specific));
+                        if(actived.isValid()) {
+                            QDBusObjectPath activedPath = actived.value();
+                            //tmp->getSettings()[DBUS_NET_INTERFACE_ActivateConnection] = activedPath.path();
+                        }
+                    }
+                }
+                break;
+            }
+            default:{
+                _notify("", Notification::Info, "Networkmanager", QString("%1 connection failed")
+                        .arg(tmp->getSettings()[PRO_CONNECTION][PRO_CONNECTION_ID].toString()));
+                break;
+            }
+            }
+            
+            
+            /* get connection type which used to decide which device it used
+              * include 802-3-ethernet, 802-11-wireless, pppoe 
+              * 802-3-ethernet use NM_DEVICE_TYPE_ETHERNET = 1
+              * 802-11-wireless use  NM_DEVICE_TYPE_WIFI = 2
+              * pppoe use NM_DEVICE_TYPE_ETHERNET and NM_DEVICE_TYPE_WIFI
+              */
             
             break;
         }
     }
+}
+
+QString Net::Network::getDevice(DEVICE_TYPE t) {
+    for(int i = 0;i < devices.length(); i ++) {
+        if(devices[i]->getDeviceType() == t) 
+            return devices[i]->getDevice();
+    }
+    return QString();
 }

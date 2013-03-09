@@ -50,3 +50,7 @@ void Net::Device::disconnect() {
                 QDBusConnection::systemBus());
     interface.call(QLatin1String(DBUS_NET_INTERFACE_DEVICE_Disconnect));
 }
+
+uint32_t Net::Device::getDeviceType() {
+    return properties["DeviceType"].toUInt();
+}
