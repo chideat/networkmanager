@@ -32,18 +32,39 @@ function load() {
     }
 }
 
+function strength(uuid, str) {
+	//get refered uuid node
+	$node = $("#" + uuid).find(".cover");
+	$node.width($node.parent().width() - $node.parent().width() * str / 70);
+}
+
 //actions
 $(document).ready(function(){
     $(document).on("click",".item", function() {
         $(this).find(".setting").show();
+        strength("uuid_1", Math.random() * 70);
+    });
+    
+    $(document).on("mouseover", ".item", function() {
+    	$(this).css({background: "#BEBEBE"});
     });
     
     $(document).on("mouseleave", ".item",function() {
         $(this).find(".setting").hide();
+        $(this).css({background: "#9F9F9F"});
+    });
+    
+    $("#flying_mode").on("click", function(){
+    	if($(this).hasClass("enabled")) {
+    		$(this).removeClass("enabled").find(".switch").css('margin-left', '0');
+    	}
+    	else {
+    		$(this).addClass("enabled").find(".switch").css('margin-left', '30px');
+    	}
     });
     
     $(document).on("click", ".connect", function() {
-        Q_Network.tryConnect($(this).attr("uuid"));
+        //Q_Network.tryConnect($(this).attr("uuid"));
     });
     
     $("#popup").on("click", function() {
@@ -70,5 +91,5 @@ $(document).ready(function(){
     });
     
     //here connect javascript function to qt signals
-    Q_Network.loadFinished.connect(load);
+    //Q_Network.loadFinished.connect(load);
 });

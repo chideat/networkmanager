@@ -2,17 +2,73 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <link type="text/css" rel="stylesheet" href="qrc:/css/main.css">
-        <script type="text/javascript" src="qrc:/js/jquery.min.js"></script>
-        <script type="text/javascript" src="qrc:/js/main.js"></script>
+        <link type="text/css" rel="stylesheet" href="css/main.css">
+        
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript" src="js/drawer.js"></script>
     </head>
     <body>
         <div id="box">
-            <div id="state">
-            </div>
+        	  <div id="title"><span>网络</span></div>
+            <div id="fly"><div><span>飞行模式</span></div><div class="button" id="flying_mode"><div class="off"><span>关</span></div><div class="vr"></div><div class="on"><span>开</span></div><div class="switch"></div></div></div>
             <div id="device-list">
                 <div class="device connected"></div>
-                <div class="device connection" ></div>
+                <div class="device connection" >
+                    <div class="item" id="uuid_1">
+					            <div>
+						            <div class="icon"><img src="img/wired.png" alt="wired"></img></div>
+						            <div class="id">wireless</div><div class="status"><!-- connected or not connected --></div>
+						            <div class="strength"><div class="cover"></div></div>
+					            </div>
+					            <div class="setting">
+						            <div><img src="img/key.png" alt="KEY"></img></div>
+						            <div><img src="img/setting.png" alt="setting"></img></div>
+						            <div class="connect button" uuid="">
+						            	<div class="off"><span>关</span></div>
+						            	<div class="vr"></div>
+						            	<div class="on"><span>开</span></div>
+						            	<div class="switch"></div>
+						            </div>
+					            </div>
+				            </div>
+				            <div class="item" id="uuid_2">
+					            <div>
+						            <div class="icon"><img src="img/wired.png" alt="wired"></img></div>
+						            <div class="id">wireless</div>
+						            <div class="status"><div class="cover"></div></div>
+					            </div>
+					            <div class="setting">
+						            <div><img src="img/key.png" alt="KEY"></img></div>
+						            <div><img src="img/setting.png" alt="setting"></img></div>
+						            <div class="connect" uuid="' + uuid +'"><img src="img/setting.png" alt="setting"></img></div>
+					            </div>
+				            </div>
+				            <div class="item" id="uuid_3">
+					            <div>
+						            <div class="icon"><img src="img/wired.png" alt="wired"></img></div>
+						            <div class="id">wireless</div>
+						            <div class="status"><div class="cover"></div></div>
+					            </div>
+					            <div class="setting">
+						            <div><img src="img/key.png" alt="KEY"></img></div>
+						            <div><img src="img/setting.png" alt="setting"></img></div>
+						            <div class="connect" uuid="' + uuid +'"><img src="img/setting.png" alt="setting"></img></div>
+					            </div>
+				            </div>
+				            <div class="item" id="uuid_4">
+					            <div>
+						            <div class="icon"><img src="img/wired.png" alt="wired"></img></div>
+						            <div class="id">wireless</div>
+						            <div class="status"><div class="cover"></div></div>
+					            </div>
+					            <div class="setting">
+						            <div><img src="img/key.png" alt="KEY"></img></div>
+						            <div><img src="img/setting.png" alt="setting"></img></div>
+						            <div class="connect" uuid="' + uuid +'"><img src="img/setting.png" alt="setting"></img></div>
+					            </div>
+				            </div>
+                </div>
             </div>
             <div id="popup">
                 <div id="advanced">
@@ -25,5 +81,17 @@
                 </div>
             </div>
         </div>
+        <script type="text/javascript">
+        	drawer();
+        	$(document).ready(function() {
+				  $("#state").on("click", function() {
+				  	var width = 0;
+				  	do {
+				  		width = $("#cover").width() - (Math.random() - 0.5) * 10;
+				  	}while(width > 300);
+					  $("#cover").width(width);
+	        })
+});
+        </script>
     </body>
 </html>
