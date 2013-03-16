@@ -2,6 +2,7 @@
 #define WINDOW_H
 
 #include <QWebView>
+#include <QProcess>
 
 #define NOTIFICAION_REPLACE_ID 2048
 #include "../notification.h"
@@ -13,13 +14,17 @@ class Window: public QWebView {
     Q_OBJECT
 public:
     Window(QWebView *parent = NULL);
-    ~Window(){}
+    ~Window();
     Network *network;
 public Q_SLOTS:
     void popup(QUrl &url);
     void insertItem(Setting *set);
+    void nmEditor();
+    
 protected:
     void focusOutEvent(QFocusEvent* event);
+    void keyPressEvent(QKeyEvent* event);
+    QProcess *process;
 signals:
     void status(QString s);
 };

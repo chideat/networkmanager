@@ -73,12 +73,18 @@ span {
 
 #title {
 	  margin: 20px 0 0 30px;
+	  height: 30px;
 }
 
 #title span{
 	  font-size: 30px;
 	  font-family: Arial;
 	  color:#EFEFEF;
+}
+
+div span {
+    font-size: 18px;
+    font-family: Arial;
 }
 
 #fly {
@@ -102,21 +108,43 @@ span {
 	position: absolute;
 	right: 0;
 	top: 0;
-  height: 100px;
-  width: 100%;
-  opacity: 0.5;
-  background-color: blue;
-  z-index: 10;
+    height: 100px;
+    width: 100%;
+    opacity: 0.5;
+    background-color: blue;
+    z-index: 10;
 }
 
-#device-list {
-    height: -webkit-calc(100% - 120px);
+#connections {
+    height: -webkit-calc(100% - 180px);
     width: 100%;
     overflow-x:hidden;
     overflow-y:auto;
 }
 
-.device {
+#connections  .title {
+    float: left;
+    text-align: left;
+    height: 100%;
+    padding: 3px 0 0 20px;
+}
+
+#connections  .notify {
+    float: right;
+    text-align: right;
+    width: 100px;
+    height: 100%;
+    padding: 3px 20px 0 0;
+    display: none;
+}
+
+#connections .wired {
+    float: left;
+    clear: both;
+    width: 100%;
+}
+
+#connections .wireless {
     float: left;
     clear: both;
     width: 100%;
@@ -126,6 +154,7 @@ span {
     float: left;
     clear: both;
     width: 100%;
+    padding-top: 3px;
     //border-top:1px solid #ADADAD;
 }
 
@@ -149,7 +178,7 @@ span {
     font-size:18px;
     font-family: Arial;
     text-overflow: clip;
-    padding: 7px 5px 5px 5px;
+    padding: 7px 5px 3px 5px;
     cursor: default;
     display:block;
 }
@@ -182,26 +211,34 @@ span {
 	  width:0;
 }
 
-	  
 .item .setting {
     display:none;
     float: left;
     clear: both;
+    height: 30px;
     width: 100%;
     padding: 2px 0 2px 0;
     background-color: #BEBEBE;
 }
 
-.setting div {
+.setting>div {
     float: left;
 }
 
 .setting .button {
     float: right;
-    margin-right: 10px;
+	margin-right: 20px;
 }
 
 /**************************/
+#foot {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 20px;
+    margin-top: 10px;
+}
+
 #popup {
     height: 20px;
     width: 80px;
@@ -229,9 +266,10 @@ span {
     clear: both;
     height: 20px;
     width: 80px;
-    margin-left: -webkit-calc((100% - 80px) / 2);
     border-radius: 0 0 40px 40px / 0 0 20px 20px;
     background-color: #DFDFDF;
+    margin-left: -webkit-calc((100% - 80px) / 2);
+    margin-bottom: 20px;
 }
 
 #action-list > div {
@@ -239,17 +277,14 @@ span {
     clear: both;
     width: 100%;
     height: 30px;
+    padding: 3px 0 0 20px;
 }
 
-#new-connection {
-    background-color: red;
+.action>div:first-child {
+    float: left;
 }
 
-#network {
-    background-color: green;
+.action .button {
+    float: right;
+    margin-right: 40px;
 }
-
-#wireless {
-    background-color: blue;
-}
-

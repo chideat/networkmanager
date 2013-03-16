@@ -67,6 +67,7 @@
 
 //org.freedesktop.NetworkManager
 #define DBUS_NET_INTERFACE_GetDevices "GetDevices"
+#define DBUS_NET_INTERFACE_Enable "Enable"
 #define DBUS_NET_INTERFACE_ActivateConnection "ActivateConnection"
 #define DBUS_NET_INTERFACE_DeactivateConnection "DeactivateConnection"
 
@@ -132,5 +133,8 @@
 #define DEVICE_DeviceType "DeviceType"
 #define DEVICE_Ip4Address "Ip4Address"
 #define DEVICE_State "State"
+
+
+#define NM_EDIROT "/usr/bin/nm-connection-editor"
 
 #endif // NETWORKMANAGER_H

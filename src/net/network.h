@@ -43,9 +43,6 @@ public :
     QList<Setting *> settings;
     QList<Device *> devices;
     
-    void enableNetwork(bool f);
-    void enableWireless(bool f);
-    
     bool isNetworkUp() { return networkUp; }
     bool isWirelessUp() { return wirelessUp; }
     bool isWirelessHardwareUp() { return wirelessHardwareUp; }
@@ -60,7 +57,10 @@ protected:
 public Q_SLOTS:
     void load();
     void addConnection(QString path);
-    void tryConnect(QString u);
+    void tryConnect(QString u, bool flag);
+    
+    void enableNetwork(bool f);
+    void enableWireless(bool f);
     
     void getConnections();
     void getDevices();
@@ -73,6 +73,8 @@ public Q_SLOTS:
     
 Q_SIGNALS:
     void loadFinished();
+    void accessPointAdded(QDBusObjectPath path);
+    
     
 private :
     uint32_t counter;

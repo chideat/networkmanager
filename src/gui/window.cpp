@@ -1,6 +1,7 @@
 ﻿#include "window.h"
 #include <QWebFrame>
 #include <QMouseEvent>
+#include <QCoreApplication>
 #include <QDebug>
 #include "../types.h"
 #include "../net/networkmanager.h"
@@ -10,6 +11,7 @@ Window::Window(QWebView *parent) : QWebView(parent) {
     setContextMenuPolicy(Qt::NoContextMenu);
     
     network = new Network(this);
+    process = new QProcess(this);
     
     page()->settings()->setAttribute(QWebSettings::JavascriptEnabled, true);
     page()->settings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, false);
@@ -29,6 +31,10 @@ Window::Window(QWebView *parent) : QWebView(parent) {
         }
     });
     
+    connect(process, &QProcess::started, [=](){
+        this->hide();
+    });
+    
     //insert items to ui
     connect(network, &Network::loadFinished, [=] (){
         QList<Setting *> tmpSetting = network->getSettings();
@@ -40,6 +46,11 @@ Window::Window(QWebView *parent) : QWebView(parent) {
     load(QUrl("qrc:/index.html"));
 }
 
+Window::~Window() {
+    delete process;
+    delete network;
+}
+
 void Window::popup(QUrl &url) {
     //load html template
     load(url);
@@ -49,6 +60,15 @@ void Window::focusOutEvent(QFocusEvent*event) {
     if(event->type() == QFocusEvent::FocusOut) {
         //hide();
         //exit(EXIT_SUCCESS);
+    }
+}
+
+void Window::keyPressEvent(QKeyEvent *event) {
+    if(event->key() == 16777268 ) {
+        this->reload();
+    }
+    else if(event->key() == 16777216 ) {
+        qApp->quit();
     }
 }
 
@@ -66,10 +86,17 @@ void Window::focusOutEvent(QFocusEvent*event) {
  */
 void Window::insertItem(Setting *set) {
     Json tmp = set->getSettings();
-    QString script = QString("js_insertItem(\"%1\", \"%2\", %3, %4)")
+    QString script = QString("js_insertItem(\"%1\", \"%2\", \"%3\", %4)")
             .arg(tmp[PRO_CONNECTION][PRO_CONNECTION_ID].toString())
             .arg(tmp[PRO_CONNECTION][PRO_CONNECTION_UUID].toString())
-            .arg(tmp[PRO_CONNECTION][PRO_CONNECTION_TYPE].toUInt())
+            .arg(tmp[PRO_CONNECTION][PRO_CONNECTION_TYPE].toString())
             .arg(tmp[PRO_CONNECTION][PRO_CONNECTION_AUTOCONNECT].toBool());
     page()->mainFrame()->evaluateJavaScript(script);
+}
+
+
+void Window::nmEditor() {
+    /**  the command to lunch nm-connection-editor is nm-connection-editor
+     */
+    process->start(NM_EDIROT);
 }

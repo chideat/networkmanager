@@ -51,6 +51,15 @@ void Net::Network::load() {
                      QString(DBUS_NET_IFACE_SETTINGS_SIGNAL_NewConnection),
                      this, SLOT(newConnection(QDBusObjectPath)));
     
+    //connections access point
+    for(int i = 0;i < devices.length(); i ++) {
+        QDBusInterface interface(DBUS_NET_SERVICE,devices[i]->device, 
+                                 DBUS_NET_PROPERTIES, QDBusConnection::systemBus());
+        
+        
+    }
+    
+    
     //tell the front end it's time to load the settings
     emit loadFinished();
 }
@@ -129,7 +138,6 @@ Net::Network::C_TYPE Net::Network::getConnectionType(QString type) {
     return Net::Network::NONE;
 }
 
-
 void Net::Network::addConnection(QString path) {
     Net::Setting *tmp = new Net::Setting(path);
     settings<<tmp;
@@ -145,22 +153,26 @@ void Net::Network::newConnection(QDBusObjectPath path) {
 }
 
 void Net::Network::enableNetwork(bool f) {
-    if(!networkUp) {
-        f = false;
-    }
+    QDBusInterface interface(
+                DBUS_NET_SERVICE, DBUS_NET_PATH, DBUS_NET_INTERFACE,
+                QDBusConnection::systemBus());
+    interface.call(QString(DBUS_NET_INTERFACE_Enable), 
+                   QVariant(f));
 }
 
 void Net::Network::enableWireless(bool f) {
-    if(wirelessHardwareUp && f) {
-        
-    }
-    else if(wirelessHardwareUp && !f) {
-        
+    QDBusInterface interface(
+                DBUS_NET_SERVICE, DBUS_NET_PATH, DBUS_NET_PROPERTIES,
+                QDBusConnection::systemBus());
+    if(wirelessHardwareUp) {
+        //enable wireless network
+        interface.call(QString(DBUS_NET_PROPERTIES_Set), QString(DBUS_NET_INTERFACE), 
+                                              QVariant(DBUS_NET_INTERFACE_WirelessEnabled), QVariant::fromValue(QDBusVariant(f)));
     }
 }
 
 //here send connect reference
-void Net::Network::tryConnect(QString u) {
+void Net::Network::tryConnect(QString u, bool flag) {
     for(int i = 0;i < settings.length(); i ++) {
         Net::Setting *tmp = settings[i];
         if(tmp->getSettings()[PRO_CONNECTION][PRO_CONNECTION_UUID] == u) {
