@@ -26,7 +26,6 @@ Net::Network::~Network() {
     settings.clear();
 }
 
-
 void Net::Network::load() {
     //get device state
     networkUp = false;
@@ -134,6 +133,10 @@ void Net::Network::getConnections() {
             addConnection(conn.path());
         }
     }
+}
+
+void Net::Network::getAccessPoints() {
+    
 }
 
 Net::Network::C_TYPE Net::Network::getConnectionType(QString type) {
@@ -278,11 +281,22 @@ QString Net::Network::getDevice(DEVICE_TYPE t) {
     return QString();
 }
 
-
 void Net::Network::accessPointAdded(QDBusObjectPath path) {
-    emit accessPoint(path.path(), true);
+    AccessPoint *tmp = new AccessPoint(path.path(), this);
+    accessPoints<<tmp;
+    connect(tmp, &AccessPoint::propertyChanged, [=](QString key, QVariant value) {
+        emit accessPointPropertyChanged(tmp->getUrl(), key, value);
+    });
+    emit accessPoint(tmp, true);
 }
 
 void Net::Network::accessPointRemoved(QDBusObjectPath path) {
-    emit accessPoint(path.path(), false);
+    for(int i = 0; i < accessPoints.length(); i ++) {
+        if(accessPoints[i]->getPath() == path.path()) {
+            emit accessPoint(accessPoints[i], false);
+            delete accessPoints[i];
+            accessPoints.removeAt(i);
+            break;
+        }
+    }
 }

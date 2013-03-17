@@ -79,6 +79,13 @@
 #define DBUS_NET_INTERFACE_WIRELESS_SIGNAL_AccessPointAdded "AccessPointAdded"
 #define DBUS_NET_INTERFACE_WIRELESS_SIGNAL_AccessPointRemoved "AccessPointRemoved"
 
+//org.freedesktop.NetworkManager.AccessPoint
+#define DBUS_NET_INTERFACE_ACCESSPOINT_SIGNAL_PropertiesChanged "PropertiesChanged"
+
+
+
+
+
 #define CONNECTION_TYPE_802_3_ETHERNET PRO_802_3_ETHERNET
 #define CONNECTION_TYPE_PPPoE PRO_PPPoE
 #define CONNECTION_TYPE_802_11_WIRELESS PRO_802_11_WIRELESS
@@ -96,6 +103,16 @@
 #define DBUS_NET_INTERFACE_Version "Version"
 #define DBUS_NET_INTERFACE_State "State"
 
+//org.freedesktop.NetworkManager.AccessPoint
+#define DBUS_NET_INTERFACE_ACCESS_POINT_Ssid "Ssid"
+#define DBUS_NET_INTERFACE_ACCESS_POINT_HwAddress "HwAddress"
+#define DBUS_NET_INTERFACE_ACCESS_POINT_Flags "Flags"
+#define DBUS_NET_INTERFACE_ACCESS_POINT_Frequency "Frequency"
+#define DBUS_NET_INTERFACE_ACCESS_POINT_MaxBitrate "MaxBitrate"
+#define DBUS_NET_INTERFACE_ACCESS_POINT_Mode "Mode"
+#define DBUS_NET_INTERFACE_ACCESS_POINT_RsnFlags "RsnFlags"
+#define DBUS_NET_INTERFACE_ACCESS_POINT_WpaFlags "WpaFlags"
+#define DBUS_NET_INTERFACE_ACCESS_POINT_Strength "Strength"
 
 //device type define
 #define DEVICE_TYPE NMDeviceType
@@ -138,6 +155,18 @@
 #define DEVICE_Ip4Address "Ip4Address"
 #define DEVICE_State "State"
 
+// 802-11-ap-sec
+#define SEC_NONE NM_802_11_AP_SEC_NONE
+#define SEC_PAIR_WEP40  NM_802_11_AP_SEC_PAIR_WEP40
+#define SEC_PAIR_WEP104 NM_802_11_AP_SEC_PAIR_WEP104
+#define SEC_PAIR_TKIP  NM_802_11_AP_SEC_PAIR_TKIP
+#define SEC_PAIR_CCMP NM_802_11_AP_SEC_PAIR_CCMP
+#define SEC_GROUP_WEP40 NM_802_11_AP_SEC_GROUP_WEP40
+#define SEC_GROUP_WEP104 NM_802_11_AP_SEC_GROUP_WEP104
+#define SEC_GROUP_TKIP NM_802_11_AP_SEC_GROUP_TKIP
+#define SEC_GROUP_CCMP NM_802_11_AP_SEC_GROUP_CCMP
+#define SEC_KEY_MGMT_PSK NM_802_11_AP_SEC_KEY_MGMT_PSK
+#define SEC_KEY_MGMT_802_1X NM_802_11_AP_SEC_KEY_MGMT_802_1X 
 
 #define NM_EDIROT "/usr/bin/nm-connection-editor"
 

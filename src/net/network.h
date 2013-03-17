@@ -6,6 +6,7 @@
 #include "networkmanager.h"
 #include "device.h"
 #include "setting.h"
+#include "accesspoint.h"
 
 namespace Net {
 /**
@@ -42,6 +43,7 @@ public :
     
     QList<Setting *> settings;
     QList<Device *> devices;
+    QList<AccessPoint *> accessPoints;
     
     bool isNetworkUp() { return networkUp; }
     bool isWirelessUp() { return wirelessUp; }
@@ -64,6 +66,7 @@ public Q_SLOTS:
     
     void getConnections();
     void getDevices();
+    void getAccessPoints();
     QString getDevice(DEVICE_TYPE t);
     
     Arr_Var getProperties(QString inter);
@@ -74,7 +77,8 @@ public Q_SLOTS:
     void accessPointRemoved(QDBusObjectPath path);
 Q_SIGNALS:
     void loadFinished();
-    void accessPoint(QString path, bool flag);
+    void accessPoint(AccessPoint ap, bool flag);
+    void accessPoint(QString url, QString key, QVariant value);
     
 private :
     uint32_t counter;

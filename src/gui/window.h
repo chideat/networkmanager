@@ -19,6 +19,7 @@ public:
 public Q_SLOTS:
     void popup(QUrl &url);
     void insertItem(Setting *set);
+    void insertItem(AccessPoint *accessPoint);
     void nmEditor();
     
 protected:

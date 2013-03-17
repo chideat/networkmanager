@@ -42,6 +42,9 @@ Window::Window(QWebView *parent) : QWebView(parent) {
             insertItem(tmpSetting.at(i));
         }
     });
+    connect(network, &Network::accessPoint, [=](AccessPoint ap, bool fg) {
+        
+    });
     
     load(QUrl("qrc:/index.html"));
 }
@@ -94,6 +97,15 @@ void Window::insertItem(Setting *set) {
     page()->mainFrame()->evaluateJavaScript(script);
 }
 
+void Window::insertItem(AccessPoint *accessPoint) {
+    QString script = QString("js_insertItem(\"%1\", \"%2\", \"%3\", %4, %5)")
+            .arg(accessPoint->getProperty(DBUS_NET_INTERFACE_ACCESS_POINT_Ssid))
+            .arg(accessPoint->getUrl())
+            .arg("802-11-wireless")
+            .arg(accessPoint->encrypt())
+            .arg(accessPoint->getProperty(DBUS_NET_INTERFACE_ACCESS_POINT_Strength));
+    page()->mainFrame()->evaluateJavaScript(script);
+}
 
 void Window::nmEditor() {
     /**  the command to lunch nm-connection-editor is nm-connection-editor
