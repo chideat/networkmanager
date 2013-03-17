@@ -147,6 +147,7 @@ div span {
 #connections .wireless {
     float: left;
     clear: both;
+    margin-top: 20px;
     width: 100%;
 }
 
@@ -157,7 +158,6 @@ div span {
     padding-top: 3px;
     //border-top:1px solid #ADADAD;
 }
-
 
 .icon {
     float: left;

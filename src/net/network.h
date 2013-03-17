@@ -42,6 +42,7 @@ public :
     };
     
     QList<Setting *> settings;
+    QList<Setting *> settingsWirlesss;
     QList<Device *> devices;
     QList<AccessPoint *> accessPoints;
     
@@ -59,14 +60,13 @@ protected:
 public Q_SLOTS:
     void load();
     void addConnection(QString path);
-    void tryConnect(QString u);
+    void tryConnect(QString u, bool flag);
     
     void enableNetwork(bool f);
     void enableWireless(bool f);
     
     void getConnections();
     void getDevices();
-    void getAccessPoints();
     QString getDevice(DEVICE_TYPE t);
     
     Arr_Var getProperties(QString inter);
@@ -77,8 +77,8 @@ public Q_SLOTS:
     void accessPointRemoved(QDBusObjectPath path);
 Q_SIGNALS:
     void loadFinished();
-    void accessPoint(AccessPoint ap, bool flag);
-    void accessPoint(QString url, QString key, QVariant value);
+    void accessPoint(AccessPoint *ap, bool flag);
+    void accessPointProperty(QString url, QString key, QVariant value);
     
 private :
     uint32_t counter;

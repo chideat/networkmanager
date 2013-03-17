@@ -54,16 +54,16 @@ void Net::Network::load() {
     for(int i = 0;i < devices.length(); i ++) {
         if(devices[i]->getDeviceType() == DEVICE_TYPE_WIFI){
             //get access point and 
-            QDBusConnection::systemBus().connect(QString(DBUS_NET_SERVICE),
-                                                 QString(devices[1]->getDevice()), 
-                    QString(DBUS_NET_INTERFACE_WIRELESS), 
-                    QString(DBUS_NET_INTERFACE_WIRELESS_SIGNAL_AccessPointAdded), 
-                    this, SLOT(accessPointAdded(QDBusObjectPath)));
-            QDBusConnection::systemBus().connect(QString(DBUS_NET_SERVICE),
-                                                 QString(devices[1]->getDevice()), 
-                    QString(DBUS_NET_INTERFACE_WIRELESS), 
-                    QString(DBUS_NET_INTERFACE_WIRELESS_SIGNAL_AccessPointRemoved), 
-                    this, SLOT(accessPointRemoved(QDBusObjectPath)));
+            QDBusConnection::systemBus()
+                    .connect(QString(DBUS_NET_SERVICE), QString(devices[i]->getDevice()), 
+                             QString(DBUS_NET_INTERFACE_WIRELESS), 
+                             QString(DBUS_NET_INTERFACE_WIRELESS_SIGNAL_AccessPointAdded), 
+                             this, SLOT(accessPointAdded(QDBusObjectPath)));
+            QDBusConnection::systemBus()
+                    .connect(QString(DBUS_NET_SERVICE),  QString(devices[i]->getDevice()), 
+                             QString(DBUS_NET_INTERFACE_WIRELESS), 
+                             QString(DBUS_NET_INTERFACE_WIRELESS_SIGNAL_AccessPointRemoved), 
+                             this, SLOT(accessPointRemoved(QDBusObjectPath)));
         }
     }
     
@@ -135,10 +135,6 @@ void Net::Network::getConnections() {
     }
 }
 
-void Net::Network::getAccessPoints() {
-    
-}
-
 Net::Network::C_TYPE Net::Network::getConnectionType(QString type) {
     if(type == CONNECTION_TYPE_802_3_ETHERNET) 
         return Net::Network::WIRED;
@@ -151,10 +147,16 @@ Net::Network::C_TYPE Net::Network::getConnectionType(QString type) {
 
 void Net::Network::addConnection(QString path) {
     Net::Setting *tmp = new Net::Setting(path);
-    settings<<tmp;
+    if(tmp->get(PRO_CONNECTION, PRO_CONNECTION_TYPE) == PRO_802_11_WIRELESS) 
+        settingsWirlesss<<tmp;
+    else 
+        settings<<tmp;
     connect(tmp, &Net::Setting::removed, [=]() {
         Net::Setting *tmp = qobject_cast<Net::Setting *>(sender());
-        settings.removeAt(settings.indexOf(tmp));
+        if(tmp->get(PRO_CONNECTION, PRO_CONNECTION_TYPE) == PRO_802_11_WIRELESS)
+            settingsWirlesss.removeAt(settingsWirlesss.indexOf(tmp));
+        else 
+            settings.removeAt(settings.indexOf(tmp));
         delete tmp;
     });
 }
@@ -183,7 +185,15 @@ void Net::Network::enableWireless(bool f) {
 }
 
 //here send connect reference
-void Net::Network::tryConnect(QString u) {
+void Net::Network::tryConnect(QString u, int flag) {
+    /* flag =
+     * 1 === wired
+     * 2 === wireless
+     * 3 === pppoe
+     */
+    if(flag == 1) {
+        
+    }
     for(int i = 0;i < settings.length(); i ++) {
         Net::Setting *tmp = settings[i];
         if(tmp->getSettings()[PRO_CONNECTION][PRO_CONNECTION_UUID] == u) {
@@ -283,9 +293,17 @@ QString Net::Network::getDevice(DEVICE_TYPE t) {
 
 void Net::Network::accessPointAdded(QDBusObjectPath path) {
     AccessPoint *tmp = new AccessPoint(path.path(), this);
+    for(int i = 0;i < settingsWirlesss.length(); i++) {
+        // ssid or bssid?
+        if(settingsWirlesss[i]->get(PRO_802_11_WIRELESS, PRO_802_11_WIRELESS_ssid) == 
+                tmp->getProperty(DBUS_NET_INTERFACE_ACCESS_POINT_Ssid)) {
+            tmp->setSetting(settingsWireless[i]);
+            settingsWirlesss.removeAt(i);
+        }
+    }
     accessPoints<<tmp;
     connect(tmp, &AccessPoint::propertyChanged, [=](QString key, QVariant value) {
-        emit accessPointPropertyChanged(tmp->getUrl(), key, value);
+        emit accessPointProperty(tmp->getUuid(), key, value);
     });
     emit accessPoint(tmp, true);
 }
@@ -294,6 +312,8 @@ void Net::Network::accessPointRemoved(QDBusObjectPath path) {
     for(int i = 0; i < accessPoints.length(); i ++) {
         if(accessPoints[i]->getPath() == path.path()) {
             emit accessPoint(accessPoints[i], false);
+            if(accessPoints[i]->getSetting() != NULL) 
+                settingsWirlesss<<accessPoints[i]->getSetting();
             delete accessPoints[i];
             accessPoints.removeAt(i);
             break;

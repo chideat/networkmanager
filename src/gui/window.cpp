@@ -42,10 +42,17 @@ Window::Window(QWebView *parent) : QWebView(parent) {
             insertItem(tmpSetting.at(i));
         }
     });
-    connect(network, &Network::accessPoint, [=](AccessPoint ap, bool fg) {
-        
+    connect(network, &Network::accessPoint, [=](AccessPoint *ap, bool fg) {
+        //if true, insert, else remove
+        if(fg) {
+            //insert
+            insertItem(ap);
+        }
+        else {
+            //remove
+            emit removeItem(ap->getUuid());
+        }
     });
-    
     load(QUrl("qrc:/index.html"));
 }
 
@@ -89,7 +96,7 @@ void Window::keyPressEvent(QKeyEvent *event) {
  */
 void Window::insertItem(Setting *set) {
     Json tmp = set->getSettings();
-    QString script = QString("js_insertItem(\"%1\", \"%2\", \"%3\", %4)")
+    QString script = QString("js_insertItem(\"%1\", \"%2\", \"%3\", %4,  0)")
             .arg(tmp[PRO_CONNECTION][PRO_CONNECTION_ID].toString())
             .arg(tmp[PRO_CONNECTION][PRO_CONNECTION_UUID].toString())
             .arg(tmp[PRO_CONNECTION][PRO_CONNECTION_TYPE].toString())
@@ -99,16 +106,15 @@ void Window::insertItem(Setting *set) {
 
 void Window::insertItem(AccessPoint *accessPoint) {
     QString script = QString("js_insertItem(\"%1\", \"%2\", \"%3\", %4, %5)")
-            .arg(accessPoint->getProperty(DBUS_NET_INTERFACE_ACCESS_POINT_Ssid))
-            .arg(accessPoint->getUrl())
+            .arg(accessPoint->getProperty(DBUS_NET_INTERFACE_ACCESS_POINT_Ssid).toString())
+            .arg(accessPoint->getUuid())
             .arg("802-11-wireless")
             .arg(accessPoint->encrypt())
-            .arg(accessPoint->getProperty(DBUS_NET_INTERFACE_ACCESS_POINT_Strength));
+            .arg(accessPoint->getProperty(DBUS_NET_INTERFACE_ACCESS_POINT_Strength).toUInt());
     page()->mainFrame()->evaluateJavaScript(script);
 }
 
 void Window::nmEditor() {
-    /**  the command to lunch nm-connection-editor is nm-connection-editor
-     */
+    /**  the command to lunch nm-connection-editor is nm-connection-editor */
     process->start(NM_EDIROT);
 }

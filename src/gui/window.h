@@ -26,8 +26,9 @@ protected:
     void focusOutEvent(QFocusEvent* event);
     void keyPressEvent(QKeyEvent* event);
     QProcess *process;
-signals:
+Q_SIGNALS:
     void status(QString s);
+    void removeItem(QString uuid);
 };
 
 #endif // WINDOW_H

@@ -1,0 +1,9 @@
+accesspoint
+=============
+thers is a question that the accesspoints and wireless connections are in conflicet
+
+ways
+-------
+accesspoint --> network --> window --> ui
+                                          |
+                         wireless connection

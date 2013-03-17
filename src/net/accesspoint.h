@@ -4,9 +4,15 @@
 #include <QObject>
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QUuid>
+#include <QMapIterator>
 #include "setting.h"
 #include "networkmanager.h"
 #include "../types.h"
+#include "setting.h"
+#include <QDebug>
+
+namespace Net {
 
 class AccessPoint : public QObject {
     Q_OBJECT
@@ -19,14 +25,14 @@ public:
         count = 0;
         do {
             reply = interface.call(QString(DBUS_NET_PROPERTIES_GetAll), 
-                       QVariant(DBUS_NET_INTERFACE_ACCESS_POINT));
+                                   QVariant(DBUS_NET_INTERFACE_ACCESS_POINT));
         }while(!reply.isValid() && count ++ < COUNT);
         
         if(reply.isValid()) {
             properties = reply.value();
         }
-        settings = NULL;
-        url = QUuid::createUuid().toString().remove('{').remove('}');
+        setting = NULL;
+        uuid = QUuid::createUuid().toString().remove('{').remove('}');
         
         QDBusConnection::systemBus().connect(QString(DBUS_NET_SERVICE), 
                                              path, QString(DBUS_NET_INTERFACE_ACCESS_POINT), 
@@ -36,11 +42,11 @@ public:
     
     ~AccessPoint(){}
     Arr_Var properties;
-    QString url;
+    QString uuid;
     QString path;
-    QString *settings;
+    Setting *setting;
 public Q_SLOTS:
-    QString getUrl() { return url; }
+    QString getUuid() { return uuid; }
     QString getPath() { return path;}
     QVariant getProperty(QString key) { return properties[key]; }
     bool encrypt() {
@@ -50,48 +56,31 @@ public Q_SLOTS:
             return true;
         return false;
     }
-
+    
     Arr_Var getProperties() { return properties; }
+    Setting *getSetting() {return setting; }
+    
+    void setSetting(Setting *s) { 
+        setting = s; 
+        uuid = s->get(PRO_CONNECTION, PRO_CONNECTION_UUID);
+    }
+    
     void propertiesChanged(Arr_Var properties) {
         //check few properties
-        if(properties.contains(QString(DBUS_NET_INTERFACE_ACCESS_POINT_Ssid)) &&
-                properties[DBUS_NET_INTERFACE_ACCESS_POINT_Ssid] != 
-                this->properties[DBUS_NET_INTERFACE_ACCESS_POINT_Ssid]) {
-            emit propertyChanged(DBUS_NET_INTERFACE_ACCESS_POINT_Ssid, 
-                                 properties[DBUS_NET_INTERFACE_ACCESS_POINT_Ssid]);
-            this->properties[DBUS_NET_INTERFACE_ACCESS_POINT_Ssid] = 
-                    properties[DBUS_NET_INTERFACE_ACCESS_POINT_Ssid];
-        } 
-        if(properties.contains(QString(DBUS_NET_INTERFACE_ACCESS_POINT_Strength)) &&
-                properties[DBUS_NET_INTERFACE_ACCESS_POINT_Strength] != 
-            this->properties[DBUS_NET_INTERFACE_ACCESS_POINT_Strength]) {
-            emit propertyChanged(DBUS_NET_INTERFACE_ACCESS_POINT_Strength, 
-                                 properties[DBUS_NET_INTERFACE_ACCESS_POINT_Strength]);
-            this->properties[DBUS_NET_INTERFACE_ACCESS_POINT_Strength] = 
-                    properties[DBUS_NET_INTERFACE_ACCESS_POINT_Strength];
-        }
-        if(properties.contains(QString(DBUS_NET_INTERFACE_ACCESS_POINT_WpaFlags)) &&
-                properties[DBUS_NET_INTERFACE_ACCESS_POINT_WpaFlags] != 
-                this->properties[DBUS_NET_INTERFACE_ACCESS_POINT_WpaFlags]) {
-            emit propertyChanged(DBUS_NET_INTERFACE_ACCESS_POINT_WpaFlags, 
-                                 properties[DBUS_NET_INTERFACE_ACCESS_POINT_WpaFlags]);
-            this->properties[DBUS_NET_INTERFACE_ACCESS_POINT_WpaFlags] = 
-                    properties[DBUS_NET_INTERFACE_ACCESS_POINT_WpaFlags];
-        }
-        if(properties.contains(QString(DBUS_NET_INTERFACE_ACCESS_POINT_RsnFlags)) &&
-                properties[DBUS_NET_INTERFACE_ACCESS_POINT_RsnFlags] != 
-                this->properties[DBUS_NET_INTERFACE_ACCESS_POINT_RsnFlags]) {
-            emit propertyChanged(DBUS_NET_INTERFACE_ACCESS_POINT_RsnFlags, 
-                                 properties[DBUS_NET_INTERFACE_ACCESS_POINT_RsnFlags]);
-            this->properties[DBUS_NET_INTERFACE_ACCESS_POINT_RsnFlags] = 
-                    properties[DBUS_NET_INTERFACE_ACCESS_POINT_RsnFlags];
+        QMapIterator<QString, QVariant> iterator(properties);
+        while(iterator.hasNext()) {
+            iterator.next();
+            if(iterator.value() != this->properties[iterator.key()])  {
+                emit propertyChanged(iterator.key(), iterator.value());
+                this->properties[DBUS_NET_INTERFACE_ACCESS_POINT_Ssid] = iterator.value();
+            }
         }
     }
-
+    
 private :
     uint32_t count;
 Q_SIGNALS:
-    void propertyChanged(QString key, QString value);
+    void propertyChanged(QString key, QVariant value);
 };
-
+}
 #endif // ACCESSPOINT_H

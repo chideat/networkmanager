@@ -18,7 +18,7 @@ HEADERS += \
 OTHER_FILES += \
     doc/pppoe \
     doc/steps \
-    src/net/touch
+    doc/Problems.txt
 
 SOURCES += \ 
     src/notification.cpp \

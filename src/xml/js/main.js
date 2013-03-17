@@ -1,20 +1,34 @@
 //functions define
-function js_insertItem(id, uuid, type, auto) {
-    item = '<div class="item" uuid="' + uuid +'">' +
-            '<div>' + 
-            '<div class="icon"><img src="qrc:/img/'+ (type==="802-11-wireless"?"wireless":"wired") +'.png" alt="wired"></img></div> ' + 
-            '<div class="id">'+ id +'</div><div class="status"></div>' + 
-            (type === '802-11-wireless' ? '<div class="strength"><div class="cover"></div></div>':'') +
-             '</div>' + 
+/*  arg_1 id,
+  * arg_2 uuid
+  * arg_3 type
+  * arg_4 wired: auto or not | wireless: encrypt or not 
+  * arg_5 strength
+  */
+function js_insertItem(arg_1, arg_2, arg_3, arg_4, arg_5) {
+    var isWireless = (arg_3==="802-11-wireless"?true : false);
+    var item = '<div class="item" id="' + arg_2 +'">' +
+            '<div><div class="icon">'+
+            '<img src="qrc:/img/'+ ( isWireless ?"wireless":"wired") + '.png" alt="wired"></img>'+
+            '</div><div class="id">'+ arg_1 +'</div><div class="status"></div>' + 
+            (isWireless ? '<div class="strength"><div class="cover"></div></div>':'') + '</div>' + 
              '<div class="setting">' +
-             '<div class="connect button" uuid=\"' + uuid + '\"><div class="off"><span>关</span></div> <div class="vr"></div><div class="on"><span>开</span></div><div class="switch"></div></div>' + 
+             '<div class="connect button" uuid=\"' + arg_2 + '\">'+
+            '<div class="off"><span>关</span></div> <div class="vr"></div>'+ 
+            '<div class="on"><span>开</span></div><div class="switch"></div></div>' + 
              '</div></div>'; 
-    if(type==='802-11-wireless') {
+    if(isWireless) {
         $(".wireless").find(".items").append($(item));
+        $(item).find(".cover").width($(item).find('.Strength').width() - 
+                                     $(item).find('.Strength').width() * arg_5 / 100);
     }
-    else {  
+    else {
         $(".wired").find(".items").append($(item));
     }
+}
+
+function remove(uuid) {
+    $("#" + uuid).remove();
 }
 
 function load() {
@@ -35,12 +49,17 @@ function load() {
     }
 }
 
-function strength(uuid, str) {
+function updateProperty(uuid, key, value) {
     //get refered uuid node
-    $node = $("#" + uuid).find(".cover");
-    $node.width($node.parent().width() - $node.parent().width() * str / 70);
+    $item = $("#" + uuid);
+    if(key === 'Ssid') {
+        $item.find(".id").text(value);
+    }
+    else if(key === 'Strength') {
+        $item.find(".cover").width($item.find('.strength').width() - 
+                                   $item.find(".strength").width() * str / 100);
+    }
 }
-
 
 function button(target) {
     if(target.hasClass("enabled")) {
@@ -57,11 +76,12 @@ function button(target) {
 //actions
 $(document).ready(function(){
     $(document).on("click",".item", function() {
-        if($(this).find(".setting").is(':hidden'))
+       /* if($(this).find(".setting").is(':hidden'))
             $(this).find(".setting").show();
         else {
             $(this).find(".setting").hide();
-        }
+        }*/
+        $(this).find(".setting").show();
     })
     .on("mouseover", ".item", function() {
         $(this).css({background: "#BEBEBE"});
@@ -78,7 +98,6 @@ $(document).ready(function(){
             Q_Network.tryConnect($(this).attr("uuid"));
         }
     });
-    
     
     $("#flying_mode").on("click", function(){
         if(button($(this)) === 'on') {
@@ -124,4 +143,6 @@ $(document).ready(function(){
     
     //here connect javascript function to qt signals
     Q_Network.loadFinished.connect(load);
+    Q_Operator.removeItem.connect(remove);
+    Q_Network.accessPointProperty.connect(updateProperty);
 });
