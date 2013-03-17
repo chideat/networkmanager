@@ -75,6 +75,10 @@
 #define DBUS_NET_INTERFACE_DEVICE_Disconnect "Disconnect"
 #define DBUS_NET_INTERFACE_DEVICE_SIGNAL_StateChanged "StateChanged"
 
+//org.freedesktop.NetworkManager.Device.Wireless
+#define DBUS_NET_INTERFACE_WIRELESS_SIGNAL_AccessPointAdded "AccessPointAdded"
+#define DBUS_NET_INTERFACE_WIRELESS_SIGNAL_AccessPointRemoved "AccessPointRemoved"
+
 #define CONNECTION_TYPE_802_3_ETHERNET PRO_802_3_ETHERNET
 #define CONNECTION_TYPE_PPPoE PRO_PPPoE
 #define CONNECTION_TYPE_802_11_WIRELESS PRO_802_11_WIRELESS

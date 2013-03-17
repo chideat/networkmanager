@@ -12,7 +12,8 @@ HEADERS += \
     src/net/setting.h \
     src/net/network.h \
     src/net/networkmanager.h \
-    src/net/device.h
+    src/net/device.h \
+    src/net/accesspoint.h
 
 OTHER_FILES += \
     doc/pppoe \

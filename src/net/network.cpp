@@ -28,7 +28,6 @@ Net::Network::~Network() {
 
 
 void Net::Network::load() {
-    
     //get device state
     networkUp = false;
     wirelessUp = false;
@@ -52,13 +51,22 @@ void Net::Network::load() {
                      this, SLOT(newConnection(QDBusObjectPath)));
     
     //connections access point
+    // use device type to determine the conection
     for(int i = 0;i < devices.length(); i ++) {
-        QDBusInterface interface(DBUS_NET_SERVICE,devices[i]->device, 
-                                 DBUS_NET_PROPERTIES, QDBusConnection::systemBus());
-        
-        
+        if(devices[i]->getDeviceType() == DEVICE_TYPE_WIFI){
+            //get access point and 
+            QDBusConnection::systemBus().connect(QString(DBUS_NET_SERVICE),
+                                                 QString(devices[1]->getDevice()), 
+                    QString(DBUS_NET_INTERFACE_WIRELESS), 
+                    QString(DBUS_NET_INTERFACE_WIRELESS_SIGNAL_AccessPointAdded), 
+                    this, SLOT(accessPointAdded(QDBusObjectPath)));
+            QDBusConnection::systemBus().connect(QString(DBUS_NET_SERVICE),
+                                                 QString(devices[1]->getDevice()), 
+                    QString(DBUS_NET_INTERFACE_WIRELESS), 
+                    QString(DBUS_NET_INTERFACE_WIRELESS_SIGNAL_AccessPointRemoved), 
+                    this, SLOT(accessPointRemoved(QDBusObjectPath)));
+        }
     }
-    
     
     //tell the front end it's time to load the settings
     emit loadFinished();
@@ -167,12 +175,12 @@ void Net::Network::enableWireless(bool f) {
     if(wirelessHardwareUp) {
         //enable wireless network
         interface.call(QString(DBUS_NET_PROPERTIES_Set), QString(DBUS_NET_INTERFACE), 
-                                              QVariant(DBUS_NET_INTERFACE_WirelessEnabled), QVariant::fromValue(QDBusVariant(f)));
+                       QVariant(DBUS_NET_INTERFACE_WirelessEnabled), QVariant::fromValue(QDBusVariant(f)));
     }
 }
 
 //here send connect reference
-void Net::Network::tryConnect(QString u, bool flag) {
+void Net::Network::tryConnect(QString u) {
     for(int i = 0;i < settings.length(); i ++) {
         Net::Setting *tmp = settings[i];
         if(tmp->getSettings()[PRO_CONNECTION][PRO_CONNECTION_UUID] == u) {
@@ -216,7 +224,7 @@ void Net::Network::tryConnect(QString u, bool flag) {
                             QVariant::fromValue(specific));
                 if(actived.isValid()) {
                     QDBusObjectPath activedPath = actived.value();
-                   //tmp->getSettings()[DBUS_NET_INTERFACE_ActivateConnection] = activedPath.path();
+                    //tmp->getSettings()[DBUS_NET_INTERFACE_ActivateConnection] = activedPath.path();
                 }
                 break;
             }
@@ -268,4 +276,13 @@ QString Net::Network::getDevice(DEVICE_TYPE t) {
             return devices[i]->getDevice();
     }
     return QString();
+}
+
+
+void Net::Network::accessPointAdded(QDBusObjectPath path) {
+    emit accessPoint(path.path(), true);
+}
+
+void Net::Network::accessPointRemoved(QDBusObjectPath path) {
+    emit accessPoint(path.path(), false);
 }

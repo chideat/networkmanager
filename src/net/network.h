@@ -57,7 +57,7 @@ protected:
 public Q_SLOTS:
     void load();
     void addConnection(QString path);
-    void tryConnect(QString u, bool flag);
+    void tryConnect(QString u);
     
     void enableNetwork(bool f);
     void enableWireless(bool f);
@@ -70,11 +70,11 @@ public Q_SLOTS:
     QList<Setting *> getSettings() { return settings; }
     
     void newConnection(QDBusObjectPath path);
-    
+    void accessPointAdded(QDBusObjectPath path);
+    void accessPointRemoved(QDBusObjectPath path);
 Q_SIGNALS:
     void loadFinished();
-    void accessPointAdded(QDBusObjectPath path);
-    
+    void accessPoint(QString path, bool flag);
     
 private :
     uint32_t counter;
@@ -84,7 +84,6 @@ private :
  * 1.how to select the device?[2013-3-6]
  *  use connection's type
  * 2. when to load the devices settings? [2013-3-7]
- *  
  */
 
 }
