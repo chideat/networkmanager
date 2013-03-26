@@ -14,10 +14,13 @@ public:
     ~Setting(){}
     
     QString path;
+    QString activePath;
     Json settings;
 public Q_SLOTS:
     void _delete();
     Json getSettings() { return settings; }
+    void setActivePath(QString path) { activePath = path;}
+    QString getActivePath() { return activePath; }
     void initSettings();
     void getSecrets(QString s);
     QVariant get(QString container, QString key);

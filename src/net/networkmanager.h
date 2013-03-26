@@ -79,6 +79,7 @@
 #define DBUS_NET_INTERFACE_GetDevices "GetDevices"
 #define DBUS_NET_INTERFACE_Enable "Enable"
 #define DBUS_NET_INTERFACE_ActivateConnection "ActivateConnection"
+#define DBUS_NET_INTERFACE_AddAndActiveConnection "AddAndActiveConnection"
 #define DBUS_NET_INTERFACE_DeactivateConnection "DeactivateConnection"
 
 //org.freedesktop.NetworkManager.Device
@@ -92,9 +93,17 @@
 //org.freedesktop.NetworkManager.AccessPoint
 #define DBUS_NET_INTERFACE_ACCESSPOINT_SIGNAL_PropertiesChanged "PropertiesChanged"
 
-
-
-
+/* none WEP
+ * ieee8021x Dynamic WEP
+ * wpa-none WPA-PSK Ad-hoc
+ * wps-psk  infrastructure WPA-PSK
+ * wpa-eap WPA-Enterprise
+ */
+#define WIRELESS_802_11_SECURITY_NONE "none"
+#define WIRELESS_802_11_SECURITY_IEEE8021X "ieee8021x"
+#define WIRELESS_802_11_SECURITY_WPA_NONE "wpa-none"
+#define WIRELESS_802_11_SECURITY_WPA_PSK "wps-psk"
+#define WIRELESS_802_11_SECURITY_WPA_EAP "wpa-eap"
 
 #define CONNECTION_TYPE_802_3_ETHERNET PRO_802_3_ETHERNET
 #define CONNECTION_TYPE_PPPoE PRO_PPPoE
@@ -177,6 +186,18 @@
 #define SEC_GROUP_CCMP NM_802_11_AP_SEC_GROUP_CCMP
 #define SEC_KEY_MGMT_PSK NM_802_11_AP_SEC_KEY_MGMT_PSK
 #define SEC_KEY_MGMT_802_1X NM_802_11_AP_SEC_KEY_MGMT_802_1X 
+
+/** 802-11-mode
+  *  0 mode is unknown 
+  *  1 for both devices and access point objects.indicates the object is part of an Ad-hoc 802.11 network without a central coordinating access point
+  *  2 infrastructure mode, for device, this indicates the device is an 802.11 client/station. 
+  *     for access point objects, this indicates the object is an access point that provides connectivity to clients.
+  *  3 the device is an access point/hotspot. not valid for access point objects themselves.
+  */
+#define MODE_802_11_UNKNOWN NM_802_11_MODE_UNKNOWN
+#define MODE_802_11_ADHOC NM_802_11_MODE_ADHOC
+#define MODE_802_11_INFRA NM_802_11_MODE_INFRA
+#define MODE_802_11_AP NM_802_11_MODE_AP
 
 #define NM_EDIROT "/usr/bin/nm-connection-editor"
 

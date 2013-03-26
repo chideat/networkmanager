@@ -30,22 +30,20 @@ function js_insertItem(arg_1, arg_2, arg_3, arg_4, arg_5) {
 function remove(uuid) {
     $("#" + uuid).remove();
 }
-
+/** init UI
+  *  network is enabled or not
+  * wireless is enabled or not
+  */
 function load() {
     if(Q_Network.networkUp) {
-        //allow showing device list
-        $("#device-list").show();
-        $("#network").addClass("enabled");
-        
-        if(Q_Network.wirelessUp) {
-            $("#wireless").addClass("enabled");
-        }
-        else {
-            $("#wireless").removeClass("enabled");
+        $(".wired").show().parent().next().hide();
+        if(!Q_Network.wirelessHardwareUp || !Q_Network.wirelessUp) {
+            $(".wireless").hide();
         }
     }
     else {
-        $("#network").removeClass("enabled");
+        $("#connections").hide();
+        $("#notify").show();
     }
 }
 
@@ -100,7 +98,7 @@ $(document).ready(function(){
     });
     
     $("#flying_mode").on("click", function(){
-        if(button($(this)) === 'on') {
+        if(button($(this)) === 'off') {
             Q_Network.enableWireless(true);
         }
         else {

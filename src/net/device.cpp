@@ -52,5 +52,13 @@ void Net::Device::disconnect() {
 }
 
 uint32_t Net::Device::getDeviceType() {
-    return properties["DeviceType"].toUInt();
+    return properties[DEVICE_DeviceType].toUInt();
+}
+
+bool Net::Device::isActived() {
+    //100
+    if(properties[DEVICE_State].toUInt() == DEVICE_STATE_ACTIVATED) 
+        return true;
+    else 
+        return false;
 }

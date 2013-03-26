@@ -42,7 +42,7 @@ public :
     };
     
     QList<Setting *> settings;
-    QList<Setting *> settingsWirlesss;
+    QList<Setting *> settingsWirless;
     QList<Device *> devices;
     QList<AccessPoint *> accessPoints;
     
@@ -60,7 +60,7 @@ protected:
 public Q_SLOTS:
     void load();
     void addConnection(QString path);
-    void tryConnect(QString u, bool flag);
+    void tryConnect(QString u);
     
     void enableNetwork(bool f);
     void enableWireless(bool f);
@@ -78,7 +78,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void loadFinished();
     void accessPoint(AccessPoint *ap, bool flag);
-    void accessPointProperty(QString url, QString key, QVariant value);
+    void accessPointProperty(QString uuid, QString key, QVariant value);
     
 private :
     uint32_t counter;

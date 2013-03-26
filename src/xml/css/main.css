@@ -230,6 +230,13 @@ div span {
 	margin-right: 20px;
 }
 
+/***************************/
+#notify {
+    text-align: left;
+    height: 100%;
+    margin: 20px;
+}
+
 /**************************/
 #foot {
     position: absolute;

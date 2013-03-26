@@ -148,13 +148,13 @@ Net::Network::C_TYPE Net::Network::getConnectionType(QString type) {
 void Net::Network::addConnection(QString path) {
     Net::Setting *tmp = new Net::Setting(path);
     if(tmp->get(PRO_CONNECTION, PRO_CONNECTION_TYPE) == PRO_802_11_WIRELESS) 
-        settingsWirlesss<<tmp;
+        settingsWirless<<tmp;
     else 
         settings<<tmp;
     connect(tmp, &Net::Setting::removed, [=]() {
         Net::Setting *tmp = qobject_cast<Net::Setting *>(sender());
         if(tmp->get(PRO_CONNECTION, PRO_CONNECTION_TYPE) == PRO_802_11_WIRELESS)
-            settingsWirlesss.removeAt(settingsWirlesss.indexOf(tmp));
+            settingsWirless.removeAt(settingsWirless.indexOf(tmp));
         else 
             settings.removeAt(settings.indexOf(tmp));
         delete tmp;
@@ -184,103 +184,117 @@ void Net::Network::enableWireless(bool f) {
     }
 }
 
-//here send connect reference
-void Net::Network::tryConnect(QString u, int flag) {
-    /* flag =
-     * 1 === wired
-     * 2 === wireless
-     * 3 === pppoe
-     */
-    if(flag == 1) {
-        
-    }
-    for(int i = 0;i < settings.length(); i ++) {
-        Net::Setting *tmp = settings[i];
+/**
+ * @brief Net::Network::tryConnect 
+ *              this function used to active the connection. 
+ * @param u - uuid
+ */
+void Net::Network::tryConnect(QString u) {
+    QDBusObjectPath path;
+    Net::Setting *setting = NULL;
+    for(Net::Setting *tmp : settings) {
         if(tmp->getSettings()[PRO_CONNECTION][PRO_CONNECTION_UUID] == u) {
             //get object path
-            QDBusInterface interface(DBUS_NET_SERVICE, DBUS_NET_PATH_SETTINGS,
-                                     DBUS_NET_IFACE_SETTINGS, QDBusConnection::systemBus());
-            
-            QDBusReply<QDBusObjectPath> reply = interface.call(
-                        QString(DBUS_NET_IFACE_SETTINGS_GetConnectionByUuid),
-                        QVariant::fromValue(u));
-            if(!reply.isValid()) {
-                return ;
-            }
-            QDBusObjectPath path = reply.value();
-            switch (getConnectionType(
-                        tmp->getSettings()[PRO_CONNECTION][PRO_CONNECTION_TYPE]
-                        .toString())) {
-            case Net::Network::WIRED: {
-                QDBusObjectPath device(getDevice(DEVICE_TYPE_ETHERNET));
-                QDBusObjectPath specific(DBUS_NET_PATH_SPECIFIC);
-                QDBusInterface conn(DBUS_NET_SERVICE, DBUS_NET_PATH, 
-                                    DBUS_NET_INTERFACE,QDBusConnection::systemBus());
-                QDBusReply<QDBusObjectPath> actived = conn.call(
-                            QString(DBUS_NET_INTERFACE_ActivateConnection),
-                            QVariant::fromValue(path), QVariant::fromValue(device),  
-                            QVariant::fromValue(specific));
-                if(actived.isValid()) {
-                    QDBusObjectPath activedPath = actived.value();
-                    //tmp->getSettings()[DBUS_NET_INTERFACE_ActivateConnection] = activedPath.path();
-                }
+            path.setPath(tmp->path);
+            setting = tmp;
+            break;
+        }
+    }
+    if(path.path().isNull() || path.path().isEmpty()) {
+        for(Net::AccessPoint *ap : accessPoints) {
+            if(ap->getSetting() != NULL && ap->getUuid() == u) {
+                path.setPath(ap->getSetting()->path);
+                setting = ap->getSetting();
                 break;
             }
-            case Net::Network::WIRELESS: {
-                QDBusObjectPath device(getDevice(DEVICE_TYPE_WIFI));
-                QDBusObjectPath specific(DBUS_NET_PATH_SPECIFIC);
-                QDBusInterface conn(DBUS_NET_SERVICE, DBUS_NET_PATH, 
-                                    DBUS_NET_INTERFACE, QDBusConnection::systemBus());
-                QDBusReply< QDBusObjectPath> actived = conn.call(
-                            QString(DBUS_NET_INTERFACE_ActivateConnection), 
-                            QVariant::fromValue(path), QVariant::fromValue(device), 
-                            QVariant::fromValue(specific));
-                if(actived.isValid()) {
-                    QDBusObjectPath activedPath = actived.value();
-                    //tmp->getSettings()[DBUS_NET_INTERFACE_ActivateConnection] = activedPath.path();
-                }
+            else if(ap->getUuid() == u && ap->getSetting() == NULL) {
+                //create settings from accesspoint
+                ap->createConnection();
+                path.setPath(ap->getSetting()->path);
+                setting = ap->getSetting();
                 break;
             }
-            case Net::Network::PPPoE : {
-                //check device state 
-                //first 802-3-ethernet network
-                for(int i = 0; i < devices.length();i ++) {
-                    Net::Device *d = devices.at(i);
-                    if(d->getProperties()[DEVICE_State].toUInt() == DEVICE_STATE_ACTIVATED ) {
-                        QDBusObjectPath device(d->getDevice());
-                        QDBusObjectPath specific(DBUS_NET_PATH_SPECIFIC);
-                        QDBusInterface conn(DBUS_NET_SERVICE, DBUS_NET_PATH, 
-                                            DBUS_NET_INTERFACE, QDBusConnection::systemBus());
-                        QDBusReply< QDBusObjectPath> actived = conn.call(
-                                    QString(DBUS_NET_INTERFACE_ActivateConnection), 
-                                    QVariant::fromValue(path), QVariant::fromValue(device), 
-                                    QVariant::fromValue(specific));
-                        if(actived.isValid()) {
-                            QDBusObjectPath activedPath = actived.value();
-                            //tmp->getSettings()[DBUS_NET_INTERFACE_ActivateConnection] = activedPath.path();
-                        }
-                    }
-                }
-                break;
+        }
+    }
+    if(setting == NULL) return ;
+    switch (getConnectionType(
+                setting->getSettings()[PRO_CONNECTION][PRO_CONNECTION_TYPE].toString())) {
+    case Net::Network::WIRED: {
+        QDBusObjectPath device(getDevice(DEVICE_TYPE_ETHERNET));
+        QDBusObjectPath specific(DBUS_NET_PATH_SPECIFIC);
+        QDBusInterface conn(DBUS_NET_SERVICE, DBUS_NET_PATH, 
+                            DBUS_NET_INTERFACE,QDBusConnection::systemBus());
+        QDBusReply<QDBusObjectPath> actived = conn.call(
+                    QString(DBUS_NET_INTERFACE_ActivateConnection),
+                    QVariant::fromValue(path), QVariant::fromValue(device),  
+                    QVariant::fromValue(specific));
+        if(actived.isValid()) {
+            QDBusObjectPath activedPath = actived.value();
+            setting->setActivePath(activedPath.path());
+        }
+        break;
+    }
+    case Net::Network::WIRELESS: {
+        // here if the wireless connection is not created, then create and active
+        QDBusObjectPath device(getDevice(DEVICE_TYPE_WIFI));
+        QDBusObjectPath specific(DBUS_NET_PATH_SPECIFIC);
+        QDBusInterface conn(DBUS_NET_SERVICE, DBUS_NET_PATH, 
+                            DBUS_NET_INTERFACE, QDBusConnection::systemBus());
+        QDBusReply< QDBusObjectPath> actived = conn.call(
+                    QString(DBUS_NET_INTERFACE_ActivateConnection), 
+                    QVariant::fromValue(path), QVariant::fromValue(device), 
+                    QVariant::fromValue(specific));
+        if(actived.isValid()) {
+            QDBusObjectPath activedPath = actived.value();
+            setting->setActivePath(activedPath.path());
+        }
+        break;
+    }
+    case Net::Network::PPPoE : {
+        // check device state 
+        // first 802-3-ethernet network
+        // ethernet first, wireless later
+        QList<Net::Device *> list;
+        for(int i  = 0; i < devices.length(); i++) {
+            if(devices[i]->getDeviceType() == DEVICE_TYPE_WIFI)
+                list << devices[i];
+            else 
+                list.insert(0, devices[i]);
+        }
+        
+        for(int i = 0; i < list.length();i ++) {
+            Net::Device *d = list.at(i);
+            if(!d->isActived())
+                continue;
+            QDBusObjectPath device(d->getDevice());
+            QDBusObjectPath specific(DBUS_NET_PATH_SPECIFIC);
+            QDBusInterface conn(DBUS_NET_SERVICE, DBUS_NET_PATH, 
+                                DBUS_NET_INTERFACE, QDBusConnection::systemBus());
+            QDBusReply< QDBusObjectPath> actived = conn.call(
+                        QString(DBUS_NET_INTERFACE_ActivateConnection), 
+                        QVariant::fromValue(path), QVariant::fromValue(device), 
+                        QVariant::fromValue(specific));
+            if(actived.isValid()) {
+                QDBusObjectPath activedPath = actived.value();
+                setting->setActivePath(activedPath.path());
             }
-            default:{
-                _notify("", Notification::Info, "Networkmanager", QString("%1 connection failed")
-                        .arg(tmp->getSettings()[PRO_CONNECTION][PRO_CONNECTION_ID].toString()));
-                break;
-            }
-            }
-            
-            
-            /* get connection type which used to decide which device it used
+        }
+        break;
+    }
+    default:{
+        _notify("", Notification::Info, "Networkmanager", QString("%1 connection failed")
+                .arg(setting->getSettings()[PRO_CONNECTION][PRO_CONNECTION_ID].toString()));
+        break;
+    }
+    }
+    
+    
+    /* get connection type which used to decide which device it used
               * include 802-3-ethernet, 802-11-wireless, pppoe 
               * 802-3-ethernet use NM_DEVICE_TYPE_ETHERNET = 1
               * 802-11-wireless use  NM_DEVICE_TYPE_WIFI = 2
               * pppoe use NM_DEVICE_TYPE_ETHERNET and NM_DEVICE_TYPE_WIFI
               */
-            
-            break;
-        }
-    }
 }
 
 QString Net::Network::getDevice(DEVICE_TYPE t) {
@@ -293,17 +307,18 @@ QString Net::Network::getDevice(DEVICE_TYPE t) {
 
 void Net::Network::accessPointAdded(QDBusObjectPath path) {
     AccessPoint *tmp = new AccessPoint(path.path(), this);
-    for(int i = 0;i < settingsWirlesss.length(); i++) {
+    for(int i = 0;i < settingsWirless.length(); i++) {
         // ssid or bssid?
-        if(settingsWirlesss[i]->get(PRO_802_11_WIRELESS, PRO_802_11_WIRELESS_ssid) == 
+        if(settingsWirless[i]->get(PRO_802_11_WIRELESS, PRO_802_11_WIRELESS_ssid) == 
                 tmp->getProperty(DBUS_NET_INTERFACE_ACCESS_POINT_Ssid)) {
-            tmp->setSetting(settingsWireless[i]);
-            settingsWirlesss.removeAt(i);
+            tmp->setSetting(settingsWirless[i]);
+            settingsWirless.removeAt(i);
         }
     }
     accessPoints<<tmp;
     connect(tmp, &AccessPoint::propertyChanged, [=](QString key, QVariant value) {
         emit accessPointProperty(tmp->getUuid(), key, value);
+        qDebug()<<tmp->getUuid();
     });
     emit accessPoint(tmp, true);
 }
@@ -313,7 +328,7 @@ void Net::Network::accessPointRemoved(QDBusObjectPath path) {
         if(accessPoints[i]->getPath() == path.path()) {
             emit accessPoint(accessPoints[i], false);
             if(accessPoints[i]->getSetting() != NULL) 
-                settingsWirlesss<<accessPoints[i]->getSetting();
+                settingsWirless<<accessPoints[i]->getSetting();
             delete accessPoints[i];
             accessPoints.removeAt(i);
             break;

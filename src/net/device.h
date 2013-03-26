@@ -22,9 +22,9 @@ public Q_SLOTS:
     QString getDevice() { return device; }
     void setDevice(QString &d) { device = d; }
     uint32_t getDeviceType();
-    
     Arr_Var getProperties();
     void stateChanged(uint32_t newState, uint32_t, uint32_t);
+    bool isActived();
     void disconnect();
 Q_SIGNALS:
     void stateChanged(uint32_t newState);
