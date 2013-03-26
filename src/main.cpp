@@ -1,11 +1,12 @@
-﻿#include "gui/window.h"
-#include <QApplication>
+﻿#include <QApplication>
 #include <QRect>
 #include <QDesktopWidget>
 #include <QDBusConnection>
 #include <QDebug>
 
 #include "net/network.h"
+#include "gui/window.h"
+
 
 #define WIDTH 300
 
@@ -22,7 +23,7 @@ int main(int argc, char **argv) {
     app.setApplicationName("networkmanager");
     app.setOrganizationName("分享zhe");
     QRect rect = app.desktop()->screenGeometry();
-    
+
     Window *window = new Window;
     window->setGeometry(rect.width() - WIDTH, 24, WIDTH, rect.height() - 24);
     
