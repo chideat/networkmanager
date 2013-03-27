@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link type="text/css" rel="stylesheet" href="qrc:/css/desktop.css">
+        <script type="text/javascript" src="qrc:/js/jquery.min.js"></script>
+        <script type="text/javascript" src="qrc:/js/desktop.js"></script>
+    </head>
+    <body>
+        <div class="panel" id="panel-left">
+            <div class="box">
+                <div class="app" data-link="terminal"  cmd="/usr/bin/gnome-terminal"><img src="qrc:/img/app/terminal.png" alt="terminal"></div>
+                <div class="app" data-link="game"  cmd="/usr/bin/xchat"><img src="qrc:/img/app/game.png" alt="game"></div>
+                <div class="app" data-link="virtualbox"  cmd="/usr/bin/virtualbox"><img src="qrc:/img/app/virtualbox.png" alt="virtualbox"></div>
+                <div class="app" data-link="wireshark" ><img src="qrc:/img/app/wireshark.png" alt="wireshark"></div>
+                <div class="app" data-link="xchat" cmd="/usr/bin/xchat"><img src="qrc:/img/app/xchat.png" alt="xchat"></div>
+                <div class="app" data-link="xbmc" cmd="/usr/bin/xbmc"><img src="qrc:/img/app/xbmc.png" alt="xbmc"></div>
+                <div class="app" data-link="tweak" ><img src="qrc:/img/app/tweak.png" alt="tweak"></div>
+                <div class="app" data-link="media-player"  cmd="/home/thinking/Desktop/media-player"><img src="qrc:/img/app/media-player.png" alt="media-player"></div>
+            </div>
+            <div cmd="more" class="app canvas"><canvas width="48px" height="48px" id="more"></canvas></div>
+        </div>
+        <div class="panel" id="panel-right">
+            <div class=""></div>
+            <div class="tray-icon">
+                <div class="icon" data-link="networkmanager"><img src="qrc:/img/network-offline.png"></div>
+                <div class="icon" data-link="media-player"><img src="qrc:/img/media-player.png"></div>
+                <div class="icon" data-link="battery"><img src="qrc:/img/gpm-primary-charged.png"></div>
+                <div class="icon" data-link="bluetooth"><img src="qrc:/img/bluetooth-disabled.png"></div>
+                <div class="icon" data-link="volume"><img src="qrc:/img/volume-medium.png"></div>
+                <div class="icon" data-link="shutdown"><img src="qrc:/img/shutdown.png"></div>
+            </div>
+        </div>
+    </body>
+</html>

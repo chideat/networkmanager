@@ -14,6 +14,9 @@ HEADERS += \
     src/net/networkmanager.h \
     src/net/device.h \
     src/net/accesspoint.h \
+    src/run.h \
+    src/main.cpp2 \
+    src/desktop.h
 
 OTHER_FILES += \
     doc/pppoe \
@@ -29,7 +32,8 @@ SOURCES += \
     src/net/ppp.cpp \
     src/net/setting.cpp \
     src/net/network.cpp \
-    src/net/device.cpp 
+    src/net/device.cpp \ 
+    src/desktop.cpp
 
 RESOURCES += \
     src/xml/resources.qrc

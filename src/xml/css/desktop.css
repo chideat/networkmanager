@@ -1,0 +1,75 @@
+body, span, div {
+    cursor: default;
+    -webkit-user-select: none;
+    overflow:hidden;
+    margin:0;
+    padding:0;
+}
+
+body {
+    background-color: #AFAFAF;
+    width: 100%;
+    height: 100%;
+}
+
+.panel {
+    background-color: #8A8A8A;
+    display: none;
+    z-index: 3;
+}
+
+/***********************************/
+/* panel left app */
+#panel-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 60px;
+}
+
+.app {
+    float: right;
+    clear: both;
+    width: 48px;
+    height: 48px;
+    margin: 6px;
+}
+
+.app img {
+    //opacity: 1;
+}
+
+.canvas {
+    position: absolute;
+    bottom: 0;
+    width: 48px;
+    height: 48px;
+}   
+
+/***********************************/
+#panel-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 300px;
+}
+    
+.tray-icon {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 44px;
+    background-color: #8A8A8A;
+    border-left: 1px solid #797979;
+    padding-bottom: 10px;
+}
+
+.tray-icon .icon {
+    float: right;
+    clear: both;
+    width: 24px;
+    height: 24px;
+    margin: 10px;
+}

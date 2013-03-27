@@ -1,16 +1,8 @@
-﻿#include <QApplication>
-#include <QRect>
-#include <QDesktopWidget>
+#include <QApplication>
 #include <QDBusConnection>
-#include <QDebug>
-
-#include "net/network.h"
-#include "gui/window.h"
+#include "desktop.h"
 
 
-#define WIDTH 300
-
-using namespace Net;
 
 int main(int argc, char **argv) {
     QApplication app(argc, argv);
@@ -20,15 +12,11 @@ int main(int argc, char **argv) {
         app.quit();
     }
     
-    app.setApplicationName("networkmanager");
+    app.setApplicationName("Desktop");
     app.setOrganizationName("分享zhe");
-    QRect rect = app.desktop()->screenGeometry();
-
-    Window *window = new Window;
-    window->setGeometry(rect.width() - WIDTH, 24, WIDTH, rect.height() - 24);
     
-
-    window->show();
+    Desktop *desktop = new Desktop;
+    desktop->show();
     
     return app.exec();
 }

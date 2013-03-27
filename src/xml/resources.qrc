@@ -2,12 +2,80 @@
     <qresource prefix="/">
         <file>index.html</file>
         <file>js/jquery.min.js</file>
-        <file>js/main.js</file>
-        <file>css/main.css</file>
+        <file>js/network.js</file>
+        <file>css/network.css</file>
         <file>img/wired.png</file>
         <file>img/wired-disconnected.png</file>
         <file>img/wireless.png</file>
         <file>img/key.png</file>
         <file>img/setting.png</file>
+        <file>js/desktop.js</file>
+        <file>img/bluetooth-active.png</file>
+        <file>img/bluetooth-disabled.png</file>
+        <file>img/bluetooth-paired.png</file>
+        <file>img/close.png</file>
+        <file>img/dialog-apply.png</file>
+        <file>img/find.png</file>
+        <file>img/gpm-primary-000.png</file>
+        <file>img/gpm-primary-000-charging.png</file>
+        <file>img/gpm-primary-020.png</file>
+        <file>img/gpm-primary-020-charging.png</file>
+        <file>img/gpm-primary-040.png</file>
+        <file>img/gpm-primary-040-charging.png</file>
+        <file>img/gpm-primary-060.png</file>
+        <file>img/gpm-primary-060-charging.png</file>
+        <file>img/gpm-primary-080.png</file>
+        <file>img/gpm-primary-080-charging.png</file>
+        <file>img/gpm-primary-100.png</file>
+        <file>img/gpm-primary-100-charging.png</file>
+        <file>img/gpm-primary-charged.png</file>
+        <file>img/gpm-primary-missing.png</file>
+        <file>img/left.png</file>
+        <file>img/media-player.png</file>
+        <file>img/media-player-stopped.png</file>
+        <file>img/network-error.png</file>
+        <file>img/network-idle.png</file>
+        <file>img/network-offline.png</file>
+        <file>img/network-receive.png</file>
+        <file>img/network-transmit.png</file>
+        <file>img/network-transmit-receive.png</file>
+        <file>img/restart.png</file>
+        <file>img/shutdown.png</file>
+        <file>img/signal-00.png</file>
+        <file>img/signal-00-secure.png</file>
+        <file>img/signal-25.png</file>
+        <file>img/signal-25-secure.png</file>
+        <file>img/signal-50.png</file>
+        <file>img/signal-50-secure.png</file>
+        <file>img/signal-75.png</file>
+        <file>img/signal-75-secure.png</file>
+        <file>img/signal-100.png</file>
+        <file>img/signal-100-secure.png</file>
+        <file>img/stage01-connecting01.png</file>
+        <file>img/stage01-connecting02.png</file>
+        <file>img/stage01-connecting03.png</file>
+        <file>img/stage01-connecting04.png</file>
+        <file>img/stage01-connecting05.png</file>
+        <file>img/stage01-connecting06.png</file>
+        <file>img/stage01-connecting07.png</file>
+        <file>img/stage01-connecting08.png</file>
+        <file>img/stage01-connecting09.png</file>
+        <file>img/stage01-connecting10.png</file>
+        <file>img/stage01-connecting11.png</file>
+        <file>img/volume-high.png</file>
+        <file>img/volume-low.png</file>
+        <file>img/volume-medium.png</file>
+        <file>img/volume-muted.png</file>
+        <file>img/volume-zero.png</file>
+        <file>img/app/game.png</file>
+        <file>img/app/media-player.png</file>
+        <file>img/app/terminal.png</file>
+        <file>img/app/tweak.png</file>
+        <file>img/app/virtualbox.png</file>
+        <file>img/app/wireshark.png</file>
+        <file>img/app/xbmc.png</file>
+        <file>img/app/xchat.png</file>
+        <file>css/desktop.css</file>
+        <file>desktop.html</file>
     </qresource>
 </RCC>
