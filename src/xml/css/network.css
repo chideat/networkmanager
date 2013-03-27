@@ -1,0 +1,256 @@
+.button {
+	height: 25px;
+	width: 65px;
+	background-color: blue;
+	border-radius: 5px;
+	padding:0;
+}
+
+.button .off {
+	float: left;
+	display: block;
+	width: 30px;
+    height: 25px;
+	margin:0;
+    padding: 0;
+	text-align: center;
+    background-color: black;
+}
+
+.button .vr {
+	float: left;
+	width: 5px;
+	height: 25px;
+	background-color: black;
+}
+
+.button .on {
+	float: right;
+	display: block;
+	width: 30px;
+    height: 25px;
+    margin:0;
+    padding: 0;
+	text-align: center;
+}
+
+#network {
+    width: 300px;
+    height: 100%;
+    background-color: #9F9F9F;
+    margin: 0;
+    padding: 0;
+}
+
+#title {
+	  margin: 20px 0 0 30px;
+	  height: 30px;
+}
+
+#title span{
+	  font-size: 30px;
+	  font-family: Arial;
+	  color:#EFEFEF;
+}
+
+#fly {
+    height: 30px;
+    width: 100%;
+    margin: 30px 0 20px 0;
+}
+
+#fly>div:first-child {
+	float: left;
+	padding-left: 20px;
+}
+
+#fly .button {
+	float: right;
+	margin-right: 20px;
+}
+
+#connections {
+    height: -webkit-calc(100% - 180px);
+    width: 100%;
+    overflow-x:hidden;
+    overflow-y:auto;
+}
+
+#connections  .title {
+    float: left;
+    text-align: left;
+    height: 100%;
+    padding: 3px 0 0 20px;
+}
+
+#connections  .notify {
+    float: right;
+    text-align: right;
+    width: 100px;
+    height: 100%;
+    padding: 3px 20px 0 0;
+    display: none;
+}
+
+#connections .wired {
+    float: left;
+    clear: both;
+    width: 100%;
+}
+
+#connections .wireless {
+    float: left;
+    clear: both;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.item {
+    float: left;
+    clear: both;
+    width: 100%;
+    padding-top: 3px;
+    //border-top:1px solid #ADADAD;
+}
+
+.icon {
+    float: left;
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 100%;
+    padding:0;
+}
+
+.icon img {
+    width: 24px;
+    height: 24px;
+    margin-top: 3px;
+}
+
+.id {
+    float: left;
+    font-size:18px;
+    font-family: Arial;
+    text-overflow: clip;
+    padding: 7px 5px 3px 5px;
+    cursor: default;
+    display:block;
+}
+
+.status {
+	  float: right;
+	  text-overflow: clip;
+	  padding: 7px 5px 0 0;
+	  cursor: default;
+	  display: block;
+}
+
+.strength {
+    float: left;
+    clear: both;
+    margin-left: 5%;
+    width: 90%;
+    height: 1px;
+    border-width:0 ;
+    background:-webkit-gradient(linear, left top, right bottom, from(#FF0000), to(#00FF00)); 
+    -webkit-background-origin:padding; 
+    -webkit-background-clip:content;
+}
+
+.strength .cover {
+	  float: right;
+	  margin:0;
+	  background-color: #9F9F9F;
+	  height: 100%;
+	  width:0;
+}
+
+.item .setting {
+    display:none;
+    float: left;
+    clear: both;
+    height: 30px;
+    width: 100%;
+    padding: 2px 0 2px 0;
+    background-color: #BEBEBE;
+}
+
+.setting>div {
+    float: left;
+}
+
+.setting .button {
+    float: right;
+	margin-right: 20px;
+}
+
+/***************************/
+#notify {
+    text-align: left;
+    height: 100%;
+    margin: 20px;
+}
+
+/**************************/
+#foot {
+    position: absolute;
+    left: 0;
+    right:44px;
+    bottom: 0;
+    height: 20px;
+    margin-top: 10px;
+}
+
+#popup {
+    height: 20px;
+    width: 80px;
+    margin-left: -webkit-calc((100% - 80px)/2);
+    border-radius: 40px 40px 0 0 / 20px 20px 0 0;
+    background-color: #DFDFDF;
+}
+
+#advanced {
+    position: absolute;
+    right: 44px;
+    bottom: 0;
+    left: 0;
+    height: 400px;
+    width:300px;
+    background-color: #8E8E8E;
+    z-index: 3;
+    display: none;
+}
+
+#popdown {
+    float: left;
+    clear: both;
+    height: 20px;
+    width: 80px;
+    border-radius: 0 0 40px 40px / 0 0 20px 20px;
+    background-color: #DFDFDF;
+    margin-left: -webkit-calc((100% - 80px) / 2);
+    margin-bottom: 20px;
+}
+
+#action-list {
+    float: left;
+    clear: both;
+    width: 100%;
+}
+
+#action-list > div {
+    float: left;
+    clear: both;
+    width: 100%;
+    height: 30px;
+    padding: 3px 0 0 20px;
+}
+
+.action>div:first-child {
+    float: left;
+}
+
+.action .button {
+    float: right;
+    margin-right: 40px;
+}

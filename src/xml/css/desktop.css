@@ -12,8 +12,13 @@ body {
     height: 100%;
 }
 
+span {
+    font-size: 18px;
+    font-family: Arial;
+}
+
 .panel {
-    background-color: #8A8A8A;
+    background-color: #9F9F9F;
     display: none;
     z-index: 3;
 }
@@ -53,20 +58,20 @@ body {
     top: 0;
     right: 0;
     bottom: 0;
-    width: 300px;
+    min-width: 44px;
 }
-    
-.tray-icon {
+
+.task-panel {
     position: absolute;
+    top: 0;
     right: 0;
     bottom: 0;
     width: 44px;
     background-color: #8A8A8A;
     border-left: 1px solid #797979;
-    padding-bottom: 10px;
 }
 
-.tray-icon .icon {
+.task-panel .tray-icon {
     float: right;
     clear: both;
     width: 24px;

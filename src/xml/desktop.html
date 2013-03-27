@@ -3,12 +3,14 @@
     <head>
         <meta charset="UTF-8">
         <link type="text/css" rel="stylesheet" href="qrc:/css/desktop.css">
+        <link type="text/css" rel="stylesheet" href="qrc:/css/network.css">
         <script type="text/javascript" src="qrc:/js/jquery.min.js"></script>
         <script type="text/javascript" src="qrc:/js/desktop.js"></script>
+        <script type="text/javascript" src="qrc:/js/network.js"></script>
     </head>
     <body>
         <div class="panel" id="panel-left">
-            <div class="box">
+            <div class="apps">
                 <div class="app" data-link="terminal"  cmd="/usr/bin/gnome-terminal"><img src="qrc:/img/app/terminal.png" alt="terminal"></div>
                 <div class="app" data-link="game"  cmd="/usr/bin/xchat"><img src="qrc:/img/app/game.png" alt="game"></div>
                 <div class="app" data-link="virtualbox"  cmd="/usr/bin/virtualbox"><img src="qrc:/img/app/virtualbox.png" alt="virtualbox"></div>
@@ -21,14 +23,39 @@
             <div cmd="more" class="app canvas"><canvas width="48px" height="48px" id="more"></canvas></div>
         </div>
         <div class="panel" id="panel-right">
-            <div class=""></div>
-            <div class="tray-icon">
-                <div class="icon" data-link="networkmanager"><img src="qrc:/img/network-offline.png"></div>
-                <div class="icon" data-link="media-player"><img src="qrc:/img/media-player.png"></div>
-                <div class="icon" data-link="battery"><img src="qrc:/img/gpm-primary-charged.png"></div>
-                <div class="icon" data-link="bluetooth"><img src="qrc:/img/bluetooth-disabled.png"></div>
-                <div class="icon" data-link="volume"><img src="qrc:/img/volume-medium.png"></div>
-                <div class="icon" data-link="shutdown"><img src="qrc:/img/shutdown.png"></div>
+                <div class="box" id="networkmanager">
+                    <div id="title"><span>网络</span></div>
+                    <div id="fly"><div><span>飞行模式</span></div><div class="button" id="flying_mode"><div class="off"><span>关</span></div><div class="vr"></div><div class="on"><span>开</span></div></div></div>
+                    <div id="connections" >
+                        <div class="wired">
+                            <div><div class="title"><span>网络连接</span></div><div class="notify"><span></span></div></div>
+                            <div class="items"></div>
+                        </div>
+                        <div class="wireless">
+                            <div><div class="title"><span>WiFi</span></div><div class="notify"><span></span></div></div>
+                            <div class="items"></div>
+                        </div>
+                    </div>
+                    <!-- div id="notify" class="title"><span>Network is Disabled</span></div -->
+                    <div id="foot">
+                        <div id="popup"></div>
+                    </div>
+                    <div id="advanced">
+                        <div id="popdown"></div>
+                        <div id="action-list">
+                            <div class="action" id="connection-new"><div><span>网络连接管理</span></div></div><!-- 调用networkmanager   nm-connection-editor -->
+                            <div class="action" id="network-detect"><div><span>网络故障诊断</span></div></div>
+                            <div class="action"><div><span >禁用网络</span></div><div class="button" id="network-forbid"><div class="off"><span>关</span></div><div class="vr"></div><div class="on"><span>开</span></div><div class="switch"></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            <div class="task-panel">
+                <div class="tray-icon" data-link="networkmanager"><img src="qrc:/img/network-offline.png"></div>
+                <div class="tray-icon" data-link="media-player"><img src="qrc:/img/media-player.png"></div>
+                <div class="tray-icon" data-link="battery"><img src="qrc:/img/gpm-primary-charged.png"></div>
+                <div class="tray-icon" data-link="bluetooth"><img src="qrc:/img/bluetooth-disabled.png"></div>
+                <div class="tray-icon" data-link="volume"><img src="qrc:/img/volume-medium.png"></div>
+                <div class="tray-icon" data-link="shutdown"><img src="qrc:/img/shutdown.png"></div>
             </div>
         </div>
     </body>

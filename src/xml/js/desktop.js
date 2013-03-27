@@ -1,14 +1,12 @@
-function panelPopup(position, flag) {
-    if(flag) {
-        if(position === "left" && $("#panel-left").is(":hidden")) {
-            $("#panel-left").show().focus();
+document.onmousemove=function(event) {
+    var point = {x:event.clientX, y:event.clientY};
+    if(point.y <= document.height/4 || event.y >= 3 * document.height/4) {
+        if(point.x <= 1) {
+            $("#panel-left").show();
         }
-        else if(position === "right" && $("#panel-right").is(":hidden")) {
-            $("#panel-right").show().focus();
+        else if(point.x >= document.width - 1) {
+            $("#panel-right").show();
         }
-    }
-    else {
-        $(".panel").hide();
     }
 }
 
@@ -33,30 +31,31 @@ function trayIcon(app) {
 
 $(document).ready(function(){
     appMore();
-    Q_Desktop.panelPopup.connect(panelPopup);
     
     $(document).on("click", ".app", function(){
-        Q_Desktop.run($(this).attr("cmd"));
+        Operator.run($(this).attr("cmd"));
     })
-    .on("click", ".icon", function(){
-        if($(this).attr("data-link") === "networkmanager") {
-            alert("networkmanager");
+    .on("click", ".tray-icon ", function(){
+        if($("#" + $(this).attr("data-link")).is(":hidden")) {
+            if($(this).attr("data-link") === "networkmanager") {
+                $("#networkmanager").show();
+            }
+            else if($(this).attr("data-link") === "media-player") {
+            }
+            else if($(this).attr("data-link") === "battery") {
+            }
+            else if($(this).attr("data-link") === "bluetooth") {
+            }
+            else if($(this).attr("data-link") === "volume") {
+            }
+            else if($(this).attr("data-link") === "shutdown") {
+            } 
         }
-        else if($(this).attr("data-link") === "media-player") {
-            alert("media-player");
-        }
-        else if($(this).attr("data-link") === "battery") {
-            alert("battery");
-        }
-        else if($(this).attr("data-link") === "bluetooth") {
-            alert("bluetooth");
-        }
-        else if($(this).attr("data-link") === "volume") {
-            alert("volume");
-        }
-        else if($(this).attr("data-link") === "shutdown") {
-            alert("shutdown");
-        }
+        else 
+            $(".box").hide();
+    })
+    .on("mouseleave", ".panel", function(){
+        $(".panel").hide().find(".box").hide();
     });
     
     
