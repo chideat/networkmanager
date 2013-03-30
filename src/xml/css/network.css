@@ -70,7 +70,7 @@
 }
 
 #connections {
-    height: -webkit-calc(100% - 180px);
+    height: 620px;
     width: 100%;
     overflow-x:hidden;
     overflow-y:auto;
@@ -146,23 +146,8 @@
 }
 
 .strength {
-    float: left;
-    clear: both;
-    margin-left: 5%;
-    width: 90%;
-    height: 1px;
-    border-width:0 ;
-    background:-webkit-gradient(linear, left top, right bottom, from(#FF0000), to(#00FF00)); 
-    -webkit-background-origin:padding; 
-    -webkit-background-clip:content;
-}
-
-.strength .cover {
-	  float: right;
-	  margin:0;
-	  background-color: #9F9F9F;
-	  height: 100%;
-	  width:0;
+    float: right;
+    margin: 7px 5px 0 0;
 }
 
 .item .setting {
@@ -194,10 +179,10 @@
 /**************************/
 #foot {
     position: absolute;
-    left: 0;
     right:44px;
     bottom: 0;
     height: 20px;
+    width: 300px;
     margin-top: 10px;
 }
 
@@ -242,8 +227,7 @@
     float: left;
     clear: both;
     width: 100%;
-    height: 30px;
-    padding: 3px 0 0 20px;
+    padding: 13px 0 10px 20px;
 }
 
 .action>div:first-child {
@@ -254,3 +238,18 @@
     float: right;
     margin-right: 40px;
 }
+
+#network-detect>div {
+    float: left;
+    clear: both;
+}
+
+.detect-result {
+    padding: 13px 0 10px 20px;
+    display: none;
+}
+
+.detect-result>span:last-chind {
+    display: none;
+}
+    

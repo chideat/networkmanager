@@ -1,4 +1,5 @@
 #include "desktop.h"
+
 #include <QCoreApplication>
 #include <QWebFrame>
 #include <QKeyEvent>
@@ -10,10 +11,9 @@ Desktop::Desktop(QWebView *parent):QWebView(parent) {
     setContextMenuPolicy(Qt::NoContextMenu);
     setWindowState(Qt::WindowFullScreen);
     
-    setMouseTracking(true);
-    
     process = new Runner(this);
     network = new Network(this);
+    watchDog = new WatchDog(this);
     
     page()->settings()->setAttribute(QWebSettings::JavascriptEnabled, true);
     page()->settings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, false);
@@ -52,6 +52,8 @@ Desktop::Desktop(QWebView *parent):QWebView(parent) {
             emit removeItem(ap->getUuid());
         }
     });
+    connect(watchDog, &WatchDog::speed, this, &Desktop::speed);
+    
     
     load(QUrl("qrc:/desktop.html"));
 }
@@ -59,16 +61,14 @@ Desktop::Desktop(QWebView *parent):QWebView(parent) {
 Desktop::~Desktop(){
     delete process;
     delete network;
+    delete watchDog;
 }
 
-void Desktop::keyPressEvent(QKeyEvent *event) {
-    if(event->key() == 16777268 ) {
-        this->reload();
-    }
-    else if(event->key() == 16777216 ) {
-        qApp->quit();
-    }
-}
+//void Desktop::keyPressEvent(QKeyEvent *event) {
+//    if(event->key() == 16777216 ) {
+//        qApp->quit();
+//    }
+//}
 
 //void Desktop::mouseMoveEvent(QMouseEvent *event) {
 //    if(event->x() > 60 && event->x() < width() - 300){

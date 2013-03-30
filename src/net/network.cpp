@@ -4,7 +4,9 @@
 #include <QDBusReply>
 #include <QDBusMetaType>
 #include <QDebug>
+#include "check.h"
 #include "../notification.h"
+
 /**
  * @brief Net::Network
  * @param parent
@@ -48,6 +50,7 @@ void Net::Network::load() {
                      QString(DBUS_NET_IFACE_SETTINGS),
                      QString(DBUS_NET_IFACE_SETTINGS_SIGNAL_NewConnection),
                      this, SLOT(newConnection(QDBusObjectPath)));
+    
     
     //connections access point
     // use device type to determine the conection
@@ -110,8 +113,10 @@ void Net::Network::getDevices() {
         reply_device = interface.call(QLatin1String(DBUS_NET_INTERFACE_GetDevices));
     }while(!reply_device.isValid() && counter++ < COUNT);
     if(reply_device.isValid()) {
-        foreach(QDBusObjectPath path, reply_device.value()) {
-            devices<<(new Net::Device(path.path()));
+        for(QDBusObjectPath path: reply_device.value()) {
+            Net::Device *tmp = new Net::Device(path.path());
+            connect(tmp, &Net::Device::disConnect, this, &Net::Network::closeConn);
+            devices<<tmp;
         }
     }
 }
@@ -189,7 +194,7 @@ void Net::Network::enableWireless(bool f) {
  *              this function used to active the connection. 
  * @param u - uuid
  */
-void Net::Network::tryConnect(QString u) {
+void Net::Network::tryConnect(QString u, QString password, QString username) {
     QDBusObjectPath path;
     Net::Setting *setting = NULL;
     for(Net::Setting *tmp : settings) {
@@ -208,8 +213,12 @@ void Net::Network::tryConnect(QString u) {
                 break;
             }
             else if(ap->getUuid() == u && ap->getSetting() == NULL) {
+                if(ap->encrypt() && password.isEmpty()) {
+                    emit needPassword(u);
+                    return ;
+                }
                 //create settings from accesspoint
-                ap->createConnection();
+                if(!ap->createConnection(password, username)) return ;
                 path.setPath(ap->getSetting()->path);
                 setting = ap->getSetting();
                 break;
@@ -297,6 +306,32 @@ void Net::Network::tryConnect(QString u) {
               */
 }
 
+void Net::Network::disConnect(QString u) {
+    QDBusObjectPath path;
+    for(Net::Setting *tmp : settings) {
+        if(tmp->getSettings()[PRO_CONNECTION][PRO_CONNECTION_UUID] == u) {
+            //get object path
+            path.setPath(tmp->activePath);
+            tmp->activePath.clear();
+            break;
+        }
+    }
+    if(path.path().isNull() || path.path().isEmpty()) {
+        for(Net::AccessPoint *ap : accessPoints) {
+            if(ap->getSetting() != NULL && ap->getUuid() == u) {
+                path.setPath(ap->getSetting()->activePath);
+                ap->getSetting()->activePath.clear();
+                break;
+            }
+        }
+    }
+    //disconnect
+    QDBusInterface interface(DBUS_NET_SERVICE,DBUS_NET_PATH,
+                             DBUS_NET_INTERFACE, QDBusConnection::systemBus());
+    interface.call(QString(DBUS_NET_INTERFACE_DeactivateConnection), 
+                   QVariant::fromValue(path));
+}
+
 QString Net::Network::getDevice(DEVICE_TYPE t) {
     for(int i = 0;i < devices.length(); i ++) {
         if(devices[i]->getDeviceType() == t) 
@@ -334,4 +369,28 @@ void Net::Network::accessPointRemoved(QDBusObjectPath path) {
             break;
         }
     }
+}
+
+void Net::Network::networkCheck() {
+    emit checkStarted();
+    Check *check = new Check(devices, this);
+    connect(check, &Check::finished, [=](Check::Network_State state) {
+        switch(state) {
+        case Check::N_CONN:
+        case Check::N_DEV:
+            emit checkfinished("Network not connected");
+            break;
+        case Check::N_DNS:
+            emit checkfinished("DNS Error");
+            break;
+        case Check::N_ROUTE:
+            emit checkfinished("Route Error");
+            break;
+        default:
+            emit checkfinished("Network seem's is OK");
+            break;
+        }
+         check->deleteLater();
+    });
+    check->check();
 }

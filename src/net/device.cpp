@@ -8,8 +8,8 @@
 
 Net::Device::Device(QString d, QObject *parent):QObject(parent) {
     device = d;
-    getProperties();
     
+    getProperties();
     QDBusConnection::systemBus().connect(QString(), QString(), DBUS_NET_INTERFACE_DEVICE, 
                                          DBUS_NET_INTERFACE_DEVICE_SIGNAL_StateChanged, this, SLOT(stateChanged(uint,uint,uint)));
 }
@@ -31,7 +31,7 @@ Arr_Var Net::Device::getProperties() {
 }
 
 void Net::Device::stateChanged(unsigned int newState, unsigned int /*oldState*/, unsigned int /*reason*/) {
-//    getProperties();
+    //    getProperties();
     switch(newState) {
     case DEVICE_STATE_ACTIVATED: 
         getProperties(); 
@@ -40,6 +40,7 @@ void Net::Device::stateChanged(unsigned int newState, unsigned int /*oldState*/,
     case DEVICE_STATE_DISCONNECTED:
         getProperties();
         emit actived(false);
+        emit disConnect(getDeviceType());
         break;
     }
 }
@@ -59,6 +60,5 @@ bool Net::Device::isActived() {
     //100
     if(properties[DEVICE_State].toUInt() == DEVICE_STATE_ACTIVATED) 
         return true;
-    else 
-        return false;
+    return false;
 }

@@ -23,6 +23,45 @@ span {
     z-index: 3;
 }
 
+/**************************************/
+.widgets {
+    
+}
+
+.speed {
+    position: absolute;
+    bottom: 0;
+    left: 40%;
+    right: 40%;
+    background-color: #9F9F9F;
+    border-radius: 1em;
+}
+
+.speed  img{
+    width: 18px;
+    height: 18px;
+    magrin-top: 3px;;
+    padding: 0;
+}
+
+.speed span {
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
+}
+
+.download, .upload {
+   margin: 5px;
+}
+
+.download {
+    float: left;
+}
+
+.upload {
+    float: right;
+}
+
 /***********************************/
 /* panel left app */
 #panel-left {
@@ -61,12 +100,16 @@ span {
     min-width: 44px;
 }
 
+.container {
+    float: left;
+    height: 100%;
+    display: none;
+}
+
 .task-panel {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
+    float: right;
     width: 44px;
+    height: 100%;
     background-color: #8A8A8A;
     border-left: 1px solid #797979;
 }
@@ -78,3 +121,49 @@ span {
     height: 24px;
     margin: 10px;
 }
+
+/********************************/
+.password {
+    position: absolute;
+    top: 30%;
+    left: 0;
+    right: 0;
+    height: 300px;
+    background-color: #008989;
+    padding: 0 0 0 30%;
+    display: none;
+}
+
+.password .message {
+    margin: 50px 0 0 14%;
+    text-align: left;
+    font-size: 28px;
+}
+
+.password .line2 {
+    margin: 10px 0 0 14%;
+}
+
+.password .textbox {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    width: 400px;
+    height: 30px;
+}
+
+.password .line3 {
+    margin: 10px 0 0 15%;
+    padding-right: 38%;
+}
+
+.password .button2 {
+    float: right;
+    width: 60px;
+    height: 28px;
+    border: 1px solid red;
+    text-align: center;
+    padding-top: 5px;
+    margin: 10px;
+}
+

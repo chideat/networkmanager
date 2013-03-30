@@ -10,17 +10,16 @@ function js_insertItem(arg_1, arg_2, arg_3, arg_4, arg_5) {
     var item = '<div class="item" id="' + arg_2 +'">' +
             '<div><div class="icon">'+
             '<img src="qrc:/img/'+ ( isWireless ?"wireless":"wired") + '.png" alt="wired"></img>'+
-            '</div><div class="id">'+ arg_1 +'</div><div class="status"></div>' + 
-            (isWireless ? '<div class="strength"><div class="cover"></div></div>':'') + '</div>' + 
-             '<div class="setting">' +
-             '<div class="connect button" uuid=\"' + arg_2 + '\">'+
+            '</div><div class="id">'+ arg_1 +'</div>' +
+            (isWireless ? (arg_4 ? '<div class="strength"><img src="img/signal-100-secure.png"></div>':'<div class="strength"><img src="img/signal-100.png"></div>'):'') + 
+            '<div class="status" style="display:none;"><span>Connected</span></div></div>' + 
+            '<div class="setting">' +
+            '<div class="connect button" uuid=\"' + arg_2 + '\">'+
             '<div class="off"><span>关</span></div> <div class="vr"></div>'+ 
             '<div class="on"><span>开</span></div></div>' + 
-             '</div></div>'; 
+            '</div></div>'; 
     if(isWireless) {
         $(".wireless").find(".items").append($(item));
-        $(item).find(".cover").width($(item).find('.Strength').width() - 
-                                     $(item).find('.Strength').width() * arg_5 / 100);
     }
     else {
         $(".wired").find(".items").append($(item));
@@ -38,12 +37,13 @@ function load() {
     if(Network.networkUp) {
         $(".wired").show().parent().next().hide();
         if(!Network.wirelessHardwareUp || !Network.wirelessUp) {
+            $("#flying_mode").addClass("enabled").find(".on").css('background-color', 'black').parent()
+            .find(".off").css('background-color', 'blue');
             $(".wireless").hide();
         }
     }
     else {
         $("#connections").hide();
-        $("#notify").show();
     }
 }
 
@@ -73,11 +73,52 @@ function button(target) {
     }
 }
 
+function speed(upload, download) {
+    if(upload > 1024) {
+        upload = upload / 1024;
+        upload = upload + " Mb/s";
+    }
+    else {
+        upload = upload + " Kb/s";
+    }
+    if(download > 1024) {
+        download = download / 1024;
+        download = download + " Mb/s";
+    }
+    else {
+        download = download + " Kb/s";
+    }
+    
+    $(".download").find("span").text(download);
+    $(".upload").find("span").text(upload);
+}
+
+function detect(result) {
+    $(".detect-result").find(".one").hide().next().text(result).show();
+}
+
+function disConnect(index) {
+    if(index === 1) {
+        $(".wired").find(".button").find(".off").css('background-color', 'black').parent()
+        .find(".on").css('background-color', 'blue').removeClass("enabled");
+        $(".wired").find(".flag").hide();
+    }
+    else  if(index === 2) {
+        $(".wireless").find(".button").find(".off").css('background-color', 'black').parent()
+        .find(".on").css('background-color', 'blue').removeClass("enabled");
+        $(".wireless").find(".flag").hide();
+    }
+}
+
+function needPassword(uuid) {
+    $(".password").show().attr("uuid", uuid).find("textbox").attr({"value": "", "type": "password"})
+    .next().attr("checked", false);
+}
+
 //actions
 $(document).ready(function(){
-    alert($(".container").height() + "   " + $("#panel-right").height() + "  " + $("body").height());
     $(document).on("click",".item", function() {
-       /* if($(this).find(".setting").is(':hidden'))
+        /* if($(this).find(".setting").is(':hidden'))
             $(this).find(".setting").show();
         else {
             $(this).find(".setting").hide();
@@ -93,19 +134,28 @@ $(document).ready(function(){
     })
     .on("click", ".connect", function() {
         if(button($(this)) === 'on') {
+            $(this).parent().parent().find(".status").show();
             Network.tryConnect($(this).attr("uuid"));
         }
         else {
-            Network.tryConnect($(this).attr("uuid"));
+            $(this).parent().parent().find(".status").hide();
+            Network.disConnect($(this).attr("uuid"));
         }
+    })
+    .on("click", ".submit", function() {
+        $(".password").hide();
+        Network.tryConnect($(".password").attr("uuid"), 
+                           $(".password").find(".textbox").val());
     });
     
     $("#flying_mode").on("click", function(){
         if(button($(this)) === 'off') {
             Network.enableWireless(true);
+            $(".wireless").show();
         }
         else {
             Network.enableWireless(false);
+            $(".wireless").hide();
         }
     });
     
@@ -115,6 +165,8 @@ $(document).ready(function(){
         }
         else {
             Network.enableNetwork(false);
+            disConnect(1);
+            disConnect(2);
         }
     });
     
@@ -132,18 +184,32 @@ $(document).ready(function(){
     });
     
     $(".action").on("mouseover", function () {
-        $(this).css('background-color', '#BEBEBE');    
+        $(this).css('background-color', '#BEBEBE');
     })
     .on("mouseleave", function () {
-        $(this).css('background-color', '#8E8E8E');    
+        $(this).css('background-color', '#8E8E8E');
     });
     
     $("#connection-new").on("click", function() {
         Operator.nmEditor();
     });
     
+    $("#network-detect").on("click", function(){
+        Network.networkCheck();
+        $(this).find(".detect-result").show();
+    })
+    .on("mouseleave", function(){
+        $(this).find(".detect-result").hide();
+    });
+    
+    
+    
     //here connect javascript function to qt signals
     Network.loadFinished.connect(load);
     Operator.removeItem.connect(remove);
     Network.accessPointProperty.connect(updateProperty);
+    Operator.speed.connect(speed);
+    Network.checkfinished.connect(detect);
+    Network.closeConn.connect(disConnect);
+    Network.needPassword.connect(needPassword);
 });

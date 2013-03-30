@@ -5,9 +5,6 @@ HEADERS += \
     src/notification.h \
     src/gui/window.h \
     src/types.h \
-    src/net/wireless.h \
-    src/net/pppoe.h \
-    src/net/ppp.h \
     src/net/connection.h \
     src/net/setting.h \
     src/net/network.h \
@@ -15,8 +12,9 @@ HEADERS += \
     src/net/device.h \
     src/net/accesspoint.h \
     src/run.h \
-    src/main.cpp2 \
-    src/desktop.h
+    src/desktop.h \
+    src/watchdog.h \
+    src/net/check.h
 
 OTHER_FILES += \
     doc/pppoe \
@@ -27,9 +25,6 @@ SOURCES += \
     src/notification.cpp \
     src/main.cpp \
     src/gui/window.cpp \
-    src/net/wireless.cpp \
-    src/net/pppoe.cpp \
-    src/net/ppp.cpp \
     src/net/setting.cpp \
     src/net/network.cpp \
     src/net/device.cpp \ 

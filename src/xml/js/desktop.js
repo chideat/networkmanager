@@ -38,7 +38,7 @@ $(document).ready(function(){
     .on("click", ".tray-icon ", function(){
         if($("#" + $(this).attr("data-link")).is(":hidden")) {
             if($(this).attr("data-link") === "networkmanager") {
-                $("#networkmanager").show();
+                $(".container").width(300).show().find("#networkmanager").show();
             }
             else if($(this).attr("data-link") === "media-player") {
             }
@@ -51,12 +51,18 @@ $(document).ready(function(){
             else if($(this).attr("data-link") === "shutdown") {
             } 
         }
-        else 
-            $(".box").hide();
+        else
+            $(".container").hide().find(".box").hide();
     })
     .on("mouseleave", ".panel", function(){
-        $(".panel").hide().find(".box").hide();
+        $(".panel").hide().find(".container").hide().find(".box").hide();
+    })
+    .on("click", ".showpwd", function() {
+        if($(this).is(":checked")) {
+            $(this).parent().find(".textbox").attr("type", "text");
+        }
+        else {
+            $(this).parent().find(".textbox").attr("type", "password");
+        }
     });
-    
-    
 });

@@ -9,6 +9,10 @@
         <script type="text/javascript" src="qrc:/js/network.js"></script>
     </head>
     <body>
+        <div class="widgets speed">
+           <div class="download"><img src="qrc:/img/download.png"><span>0 kb/s</span></div> 
+           <div class="upload"><img src="qrc:/img/upload.png"><span>0 kb/s</span></div> 
+       </div>
         <div class="panel" id="panel-left">
             <div class="apps">
                 <div class="app" data-link="terminal"  cmd="/usr/bin/gnome-terminal"><img src="qrc:/img/app/terminal.png" alt="terminal"></div>
@@ -23,6 +27,7 @@
             <div cmd="more" class="app canvas"><canvas width="48px" height="48px" id="more"></canvas></div>
         </div>
         <div class="panel" id="panel-right">
+            <div class="container">
                 <div class="box" id="networkmanager">
                     <div id="title"><span>网络</span></div>
                     <div id="fly"><div><span>飞行模式</span></div><div class="button" id="flying_mode"><div class="off"><span>关</span></div><div class="vr"></div><div class="on"><span>开</span></div></div></div>
@@ -36,7 +41,7 @@
                             <div class="items"></div>
                         </div>
                     </div>
-                    <!-- div id="notify" class="title"><span>Network is Disabled</span></div -->
+                    <div id="notify" class="title"><span>Network is Disabled</span></div>
                     <div id="foot">
                         <div id="popup"></div>
                     </div>
@@ -44,19 +49,27 @@
                         <div id="popdown"></div>
                         <div id="action-list">
                             <div class="action" id="connection-new"><div><span>网络连接管理</span></div></div><!-- 调用networkmanager   nm-connection-editor -->
-                            <div class="action" id="network-detect"><div><span>网络故障诊断</span></div></div>
+                            <div class="action" id="network-detect"><div><span>网络故障诊断</span></div>
+                                <div class="detect-result"><div><span class="one">检测中,请稍后......</span><span class="two"></span></div></div>  
+                            </div>
                             <div class="action"><div><span >禁用网络</span></div><div class="button" id="network-forbid"><div class="off"><span>关</span></div><div class="vr"></div><div class="on"><span>开</span></div><div class="switch"></div></div></div>
                         </div>
                     </div>
                 </div>
+            </div>
             <div class="task-panel">
-                <div class="tray-icon" data-link="networkmanager"><img src="qrc:/img/network-offline.png"></div>
+                <div class="tray-icon" data-link="shutdown"><img src="qrc:/img/shutdown.png"></div>
                 <div class="tray-icon" data-link="media-player"><img src="qrc:/img/media-player.png"></div>
                 <div class="tray-icon" data-link="battery"><img src="qrc:/img/gpm-primary-charged.png"></div>
                 <div class="tray-icon" data-link="bluetooth"><img src="qrc:/img/bluetooth-disabled.png"></div>
                 <div class="tray-icon" data-link="volume"><img src="qrc:/img/volume-medium.png"></div>
-                <div class="tray-icon" data-link="shutdown"><img src="qrc:/img/shutdown.png"></div>
+                <div class="tray-icon" data-link="networkmanager"><img src="qrc:/img/network-offline.png"></div>
             </div>
+        </div>
+        <div class="password" uuid="" >
+                     <div class="message"><span>无线连接<br>请输入连接密码:</span></div>
+                      <div class="line2"><input type="password" class="textbox"><input type="checkbox" class="showpwd">显示密码</div>
+                      <div class="line3"><div class="submit button2" ><span>确定</span></div><div class="cancel button2"><span>取消</span></div></div>
         </div>
     </body>
 </html>

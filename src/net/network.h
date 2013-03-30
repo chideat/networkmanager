@@ -60,7 +60,8 @@ protected:
 public Q_SLOTS:
     void load();
     void addConnection(QString path);
-    void tryConnect(QString u);
+    void tryConnect(QString u, QString password = "", QString username = "");
+    void disConnect(QString u);
     
     void enableNetwork(bool f);
     void enableWireless(bool f);
@@ -72,6 +73,7 @@ public Q_SLOTS:
     Arr_Var getProperties(QString inter);
     QList<Setting *> getSettings() { return settings; }
     
+    void networkCheck();
     void newConnection(QDBusObjectPath path);
     void accessPointAdded(QDBusObjectPath path);
     void accessPointRemoved(QDBusObjectPath path);
@@ -79,7 +81,10 @@ Q_SIGNALS:
     void loadFinished();
     void accessPoint(AccessPoint *ap, bool flag);
     void accessPointProperty(QString uuid, QString key, QVariant value);
-    
+    void checkStarted();
+    void checkfinished(QString result);
+    void closeConn(int i);
+    void needPassword(QString uuid);
 private :
     uint32_t counter;
 };

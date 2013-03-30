@@ -29,11 +29,10 @@ public Q_SLOTS:
 Q_SIGNALS:
     void stateChanged(uint32_t newState);
     void actived(bool f);
+    void disConnect(int id);
 private :
     uint32_t counter;
-    
 
-    
 };
 
 

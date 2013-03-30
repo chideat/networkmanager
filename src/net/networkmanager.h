@@ -35,7 +35,7 @@
 
 #define PRO_IPv4 "ipv4"
 #define PRO_IPv6 "ipv6"
-#define PRO_IP_ADDREDD "addresses"
+#define PRO_IP_ADDRESS "addresses"
 #define PRO_IP_DNS "dns"
 #define PRO_IP_METHOD "method"
 #define PRO_IP_METHOD_AUTO "auto"
@@ -58,6 +58,14 @@
 #define PRO_802_11_WIRELESS_seen_bssids "seen-bssids"
 #define PRO_802_11_WIRELESS_ssid "ssid"
 
+#define PRO_802_11_WIRELESS_security_802_11 "802-11-wireless-security"
+#define PRO_802_11_WIRELESS_security_802_11_key_mgmt "key-mgmt"
+#define PRO_802_11_WIRELESS_security_802_11_auth_alg "auth-alg"
+#define PRO_802_11_WIRELESS_security_802_11_wep_key0 "wep-key0"
+#define PRO_802_11_WIRELESS_security_802_11_wep_key_flags "wep-key-flags"
+#define PRO_802_11_WIRELESS_security_802_11_wep_key_type "wep-key-type"
+#define PRO_802_11_WIRELESS_security_802_11_psk "psk"
+#define PRO_802_11_WIRELESS_security_802_11_psk_flags "psk-flags"
 
 
 //interfaces' functions
@@ -173,6 +181,10 @@
 #define DEVICE_DeviceType "DeviceType"
 #define DEVICE_Ip4Address "Ip4Address"
 #define DEVICE_State "State"
+
+// ap flags
+#define FLAGS_NM_802_11_AP_PRIVACY  NM_802_11_AP_FLAGS_PRIVACY
+#define FLAGS_NM_802_11_AP_NONE  NM_802_11_AP_FLAGS_NONE
 
 // 802-11-ap-sec
 #define SEC_NONE NM_802_11_AP_SEC_NONE

@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>index.html</file>
         <file>js/jquery.min.js</file>
         <file>js/network.js</file>
         <file>css/network.css</file>
@@ -29,7 +28,6 @@
         <file>img/gpm-primary-100.png</file>
         <file>img/gpm-primary-100-charging.png</file>
         <file>img/gpm-primary-charged.png</file>
-        <file>img/gpm-primary-missing.png</file>
         <file>img/left.png</file>
         <file>img/media-player.png</file>
         <file>img/media-player-stopped.png</file>
@@ -37,10 +35,7 @@
         <file>img/network-idle.png</file>
         <file>img/network-offline.png</file>
         <file>img/network-receive.png</file>
-        <file>img/network-transmit.png</file>
-        <file>img/network-transmit-receive.png</file>
         <file>img/restart.png</file>
-        <file>img/shutdown.png</file>
         <file>img/signal-00.png</file>
         <file>img/signal-00-secure.png</file>
         <file>img/signal-25.png</file>
@@ -77,5 +72,11 @@
         <file>img/app/xchat.png</file>
         <file>css/desktop.css</file>
         <file>desktop.html</file>
+        <file>img/shutdown.png</file>
+        <file>img/download.png</file>
+        <file>img/gpm-primary-missing.png</file>
+        <file>img/network-transmit.png</file>
+        <file>img/network-transmit-receive.png</file>
+        <file>img/upload.png</file>
     </qresource>
 </RCC>
